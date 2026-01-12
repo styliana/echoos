@@ -1,6 +1,7 @@
 # belfort
 
 A new Flutter project. Echoos
+Our slides: https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKmFmZv-86w/edit?utm_content=DAG-Oiy4wJM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ## Getting Started
 ### PAGE1 - global pulse 
