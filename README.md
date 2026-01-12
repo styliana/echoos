@@ -9,6 +9,7 @@ Our slides: [Click here](https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKm
 ~~* Floating animated bubbles representing real-time user emotions~~
 ~~* Share your mood (emoji + text) or "catch" others' bubbles to send support~~
 * Personal emotional journey history from previous days IN PROGRESS
+* User cannot click on their own bubble and send supportthey can do it for others' buuble
 
 ### PAGE 2 - Breathing
 
@@ -19,6 +20,7 @@ Our slides: [Click here](https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKm
 
 * Track support messages received and kindness sent to others IN PROGRESS
 * View your "Emotion Streak" and consistency via a dedicated calendar
+* Num of sent suppoerts and received
 
 ## Design DNA
 
