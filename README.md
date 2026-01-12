@@ -1,29 +1,17 @@
-# Echoos
+# belfort
 
-**Echoos** is a minimalist mental well-being app built with Flutter and Firebase. It features a deep-dark aesthetic designed to reduce digital fatigue while fostering anonymous emotional support.
+A new Flutter project. Echoos
+Our slides: https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKmFmZv-86w/edit?utm_content=DAG-Oiy4wJM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
-## App Structure
+## Getting Started
+### PAGE1 - global pulse 
+- We see emotions in the bubbles moving around
+- User can add their own emotion, choose the emoji and write what they feel
+- Other users can "catch" the bubble and add reaction & supporting comment
+- User can see their emotions from today and days before.
 
-### PAGE 1 - Global Pulse
+### PAGE2
+breatching page in the same ui as page1
 
-* Floating animated bubbles representing real-time user emotions
-* Share your mood (emoji + text) or "catch" others' bubbles to send support
-* Personal emotional journey history from previous days
-
-### PAGE 2 - Breathing
-
-* Synchronized breathing tool for relaxation
-* Immersive design following the calm Global Pulse aesthetic
-
-### PAGE 3 - Stats
-
-* Track support messages received and kindness sent to others
-* View your "Emotion Streak" and consistency via a dedicated calendar
-
-## Design DNA
-
-* Deep black theme (`#0F0F0F`)
-* Calm background particles and physics-based animations
-* Premium feel using elegant serif typography (Georgia)
-
-You are doing very well.
+### PAGE3 - stats
+- User can see how many people sent the support to them and how many supports they sent
