@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'ZenMind',
+      title: 'GlobalPulse',
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: Colors.teal,

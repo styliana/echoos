@@ -1,26 +1,19 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-enum Mood { happy, stressed, sad, angry, calm }
-
-const _moodLabels = {
-  Mood.happy: 'Happy',
-  Mood.stressed: 'Stressed',
-  Mood.sad: 'Sad',
-  Mood.angry: 'Angry',
-  Mood.calm: 'Calm',
-};
+import '../bloc/pulse_bloc.dart';
+import '../bloc/pulse_event.dart';
+import '../bloc/pulse_state.dart';
+import '../data/models/pulse_model.dart';
 
 const _moodIcons = {
-  Mood.happy: Icons.sentiment_satisfied,
-  Mood.stressed: Icons.sentiment_dissatisfied,
-  Mood.sad: Icons.mood_bad,
-  Mood.angry: Icons.sentiment_very_dissatisfied,
-  Mood.calm: Icons.self_improvement,
+  Mood.happy: '😊',
+  Mood.stressed: '😫',
+  Mood.sad: '😢',
+  Mood.angry: '😡',
+  Mood.calm: '🧘',
 };
-
 const _moodColors = {
   Mood.happy: Colors.amber,
   Mood.stressed: Colors.redAccent,
@@ -29,286 +22,556 @@ const _moodColors = {
   Mood.calm: Colors.teal,
 };
 
-class GlobalPulsePage extends StatefulWidget {
+class GlobalPulsePage extends StatelessWidget {
   const GlobalPulsePage({super.key});
 
   @override
-  State<GlobalPulsePage> createState() => _GlobalPulsePageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => PulseBloc()..add(StreamPulses()),
+      child: const GlobalPulseView(),
+    );
+  }
 }
 
-class _Particle {
-  final String id;
-  Offset pos;
-  Offset vel;
-  final Mood mood;
-  final double size;
-  final bool isMine;
-  final List<String> supports;
+class GlobalPulseView extends StatefulWidget {
+  const GlobalPulseView({super.key});
 
-  _Particle({
-    required this.id,
-    required this.pos,
-    required this.vel,
-    required this.mood,
-    required this.size,
-    this.isMine = false,
-    List<String>? supports,
-  }) : supports = supports ?? [];
+  @override
+  State<GlobalPulseView> createState() => _GlobalPulseViewState();
 }
 
-class _GlobalPulsePageState extends State<GlobalPulsePage> with SingleTickerProviderStateMixin {
-  final List<_Particle> _particles = [];
-  late final Ticker _ticker;
-  late final Random _rand;
-  Duration _last = Duration.zero;
+class _GlobalPulseViewState extends State<GlobalPulseView> {
+  final Map<String, _BubbleSettings> _bubbleConfigs = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PulseBloc, PulseState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              ...List.generate(15, (index) => const _BackgroundParticle()),
+
+              Positioned(
+                top: 58,
+                left: 30,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "GlobalPulse",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 34,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                    Text(
+                      "Community",
+                      style: TextStyle(
+                        color: Colors.tealAccent.withOpacity(0.8),
+                        fontSize: 20,
+                        fontFamily: 'Georgia',
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w300,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      height: 2,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(
+                          colors: [Colors.tealAccent, Colors.transparent],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              ...state.pulses.map((p) {
+                _bubbleConfigs.putIfAbsent(p.id, () => _BubbleSettings());
+                final config = _bubbleConfigs[p.id]!;
+
+                return _FloatingBubble(
+                  pulse: p,
+                  config: config,
+                  onTap: () => _showSupportModal(context, p),
+                );
+              }).toList(),
+            ],
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: _buildFabRow(context, state),
+        );
+      },
+    );
+  }
+
+  Widget _buildFabRow(BuildContext context, PulseState state) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FloatingActionButton(
+            heroTag: "history",
+            onPressed: () => _showHistory(context, state.pulses),
+            backgroundColor: Colors.white10,
+            child: const Icon(Icons.history, color: Colors.white),
+          ),
+          FloatingActionButton(
+            heroTag: "add",
+            onPressed: state.hasPostedToday
+                ? null
+                : () => _showAddMoodDialog(context),
+            backgroundColor: state.hasPostedToday
+                ? Colors.grey
+                : Colors.tealAccent,
+            child: Icon(
+              state.hasPostedToday ? Icons.check : Icons.add,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showHistory(BuildContext context, List<MoodPulse> allPulses) {
+    final myUid = FirebaseAuth.instance.currentUser?.uid;
+    final myHistory = allPulses.where((p) => p.userId == myUid).toList();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.grey[900],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              "My Mood Journey",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Divider(color: Colors.white24),
+            Expanded(
+              child: myHistory.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No history yet",
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: myHistory.length,
+                      itemBuilder: (context, index) {
+                        final p = myHistory[index];
+                        return ListTile(
+                          leading: Text(
+                            _moodIcons[p.mood]!,
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                          title: Text(
+                            "Mood from ${p.createdAt.day}/${p.createdAt.month}",
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Text(
+                            "${p.supports.length} supports received",
+                            style: const TextStyle(color: Colors.tealAccent),
+                          ),
+                          trailing: const Icon(
+                            Icons.chevron_right,
+                            color: Colors.white24,
+                          ),
+                          onTap: () => _showComments(context, p),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showComments(BuildContext context, MoodPulse p) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Text(_moodIcons[p.mood]!, style: const TextStyle(fontSize: 28)),
+            const SizedBox(width: 10),
+            const Text(
+              "Community Support",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: p.supports.isEmpty
+              ? const Text(
+                  "No comments yet. Stay strong!",
+                  style: TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: p.supports.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final support = p.supports[index];
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _moodColors[p.mood]!.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: _moodColors[p.mood]!.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text("❤️", style: TextStyle(fontSize: 12)),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                support,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "Close",
+              style: TextStyle(color: Colors.tealAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddMoodDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (innerContext) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "How are you feeling?",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: Mood.values
+                  .map(
+                    (m) => IconButton(
+                      icon: Text(
+                        _moodIcons[m]!,
+                        style: const TextStyle(fontSize: 40),
+                      ),
+                      onPressed: () {
+                        context.read<PulseBloc>().add(AddPulse(m));
+                        Navigator.pop(innerContext);
+                      },
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSupportModal(BuildContext context, MoodPulse pulse) {
+    final TextEditingController controller = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF1A1A1A),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 30,
+          right: 30,
+          top: 30,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Send Support",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Send a kind word to someone feeling ${pulse.mood.name}",
+              style: TextStyle(color: Colors.white.withOpacity(0.5)),
+            ),
+            const SizedBox(height: 24),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: "Type your message...",
+                hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.05),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              maxLines: 3,
+            ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                if (controller.text.trim().isNotEmpty) {
+                  context.read<PulseBloc>().add(
+                    AddSupport(pulse.id, controller.text.trim()),
+                  );
+                  Navigator.pop(context);
+                }
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: Colors.tealAccent,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Center(
+                  child: Text(
+                    "SEND",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BubbleSettings {
+  final double size = 40.0 + Random().nextDouble() * 40.0;
+  final Offset startPos = Offset(
+    Random().nextDouble() * 300,
+    150 + Random().nextDouble() * 400,
+  );
+  final double speed = 0.2 + Random().nextDouble() * 0.5;
+}
+
+class _FloatingBubble extends StatefulWidget {
+  final MoodPulse pulse;
+  final _BubbleSettings config;
+  final VoidCallback onTap;
+
+  const _FloatingBubble({
+    required this.pulse,
+    required this.config,
+    required this.onTap,
+  });
+
+  @override
+  State<_FloatingBubble> createState() => _FloatingBubbleState();
+}
+
+class _FloatingBubbleState extends State<_FloatingBubble>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late double _randomSeed;
 
   @override
   void initState() {
     super.initState();
-    _rand = Random();
-    // start with a few particles
-    for (var i = 0; i < 12; i++) {
-      _particles.add(_randomParticle());
-    }
-
-    _ticker = createTicker(_onTick)..start();
+    _randomSeed = Random().nextDouble() * 100;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 10),
+    )..repeat();
   }
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  _Particle _randomParticle({Offset? pos, Mood? mood, bool isMine = false}) {
-    final moods = Mood.values;
-    final chosen = mood ?? moods[_rand.nextInt(moods.length)];
-    final size = 28.0 + _rand.nextDouble() * 36.0;
-    final vel = Offset((_rand.nextDouble() - 0.5) * 120.0, (_rand.nextDouble() - 0.5) * 120.0);
-    return _Particle(
-      id: DateTime.now().microsecondsSinceEpoch.toString() + '-' + _rand.nextInt(10000).toString(),
-      pos: pos ?? Offset(_rand.nextDouble() * 300, _rand.nextDouble() * 500),
-      vel: vel,
-      mood: chosen,
-      size: size,
-      isMine: isMine,
-    );
-  }
-
-  void _onTick(Duration elapsed) {
-    final dt = (_last == Duration.zero) ? 0.016 : (elapsed - _last).inMilliseconds / 1000.0;
-    _last = elapsed;
-    final size = MediaQuery.of(context).size;
-    final w = size.width;
-    final h = size.height;
-
-    setState(() {
-      for (final p in _particles) {
-        var nx = p.pos.dx + p.vel.dx * dt;
-        var ny = p.pos.dy + p.vel.dy * dt;
-
-        // bounce
-        if (nx < 0) { nx = 0; p.vel = Offset(-p.vel.dx, p.vel.dy); }
-        if (nx > w - p.size) { nx = w - p.size; p.vel = Offset(-p.vel.dx, p.vel.dy); }
-        if (ny < 0) { ny = 0; p.vel = Offset(p.vel.dx, -p.vel.dy); }
-        if (ny > h - p.size - 80) { ny = h - p.size - 80; p.vel = Offset(p.vel.dx, -p.vel.dy); }
-
-        // gentle friction
-        p.vel = p.vel * 0.995;
-
-        p.pos = Offset(nx, ny);
-      }
-    });
-  }
-
-  void _addParticle({Offset? where, Mood? mood, bool isMine = false}) {
-    final pos = where ?? Offset(MediaQuery.of(context).size.width / 2, MediaQuery.of(context).size.height / 2);
-    setState(() => _particles.add(_randomParticle(pos: pos, mood: mood, isMine: isMine)));
-  }
-
-  Future<void> _openMoodPicker() async {
-    final chosen = await showModalBottomSheet<Mood>(
-      context: context,
-      builder: (ctx) {
-        return Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Wrap(
-            spacing: 10,
-            children: Mood.values.map((m) {
-              return ElevatedButton.icon(
-                icon: Icon(_moodIcons[m], color: Colors.white),
-                label: Text(_moodLabels[m]!),
-                style: ElevatedButton.styleFrom(backgroundColor: _moodColors[m]),
-                onPressed: () => Navigator.of(ctx).pop(m),
-              );
-            }).toList(),
-          ),
-        );
-      },
-    );
-
-    if (chosen != null) {
-      // add user's mood particle at center
-      _addParticle(mood: chosen, isMine: true);
-    }
-  }
-
-  Future<void> _openSupportModal(_Particle p) async {
-    final option = await showModalBottomSheet<String>(
-      context: context,
-      builder: (ctx) {
-        final options = ['Send hug', 'Breathe together', 'Share resources', 'Send kind message'];
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: options.map((o) => ListTile(title: Text(o), onTap: () => Navigator.of(ctx).pop(o))).toList(),
-        );
-      },
-    );
-
-    if (option != null) {
-      if (!mounted) return;
-      setState(() => p.supports.add('$option • ${TimeOfDay.now().format(context)}'));
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Support sent anonymously')));
-    }
-  }
-
-  void _openMyMoods() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => _MyMoodsPage(particles: _particles.where((p) => p.isMine).toList())));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Global Pulse'),
-        actions: [
-          IconButton(onPressed: _openMyMoods, icon: const Icon(Icons.person)),
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: () {
-              final user = FirebaseAuth.instance.currentUser;
-              showDialog<void>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('Account'),
-                  content: Text(user == null
-                      ? 'Not signed in'
-                      : (user.isAnonymous ? 'Signed in anonymously' : 'Signed in as ${user.email ?? user.uid}')),
-                  actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('OK'))],
-                ),
-              );
-            },
-          ),
-          IconButton(onPressed: () async => await FirebaseAuth.instance.signOut(), icon: const Icon(Icons.logout)),
-        ],
-      ),
-      body: GestureDetector(
-        // free clicks no longer add particles
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.center,
-              radius: 1.2,
-              colors: [Color(0xFF0F172A), Color(0xFF071126)],
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final double t = _controller.value * 2 * pi;
+        final dx = sin(t + _randomSeed) * 15;
+        final dy = cos(t * 0.5 + _randomSeed) * 20;
+        final pulseScale = 1.0 + (sin(t * 2) * 0.05);
+
+        return Positioned(
+          left: widget.config.startPos.dx + dx,
+          top: widget.config.startPos.dy + dy,
+          child: Transform.scale(
+            scale: pulseScale,
+            child: GestureDetector(
+              onTap: widget.onTap,
+              child: _buildBubbleUI(),
             ),
           ),
-          child: Stack(
-            children: [
-              // floating particles
-              for (final p in _particles)
-                Positioned(
-                  left: p.pos.dx,
-                  top: p.pos.dy,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      if (!p.isMine) _openSupportModal(p);
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: p.size,
-                          height: p.size,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _moodColors[p.mood]!.withOpacity(0.95),
-                            border: p.isMine ? Border.all(color: Colors.white, width: 2) : null,
-                            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 4)],
-                          ),
-                          child: Icon(_moodIcons[p.mood], color: Colors.white, size: p.size * 0.6),
-                        ),
-                        if (!p.isMine && p.supports.isNotEmpty)
-                          Positioned(
-                            right: -4,
-                            top: -4,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                              child: Text('${p.supports.length}', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                        if (p.isMine)
-                          const Positioned(
-                            left: 0,
-                            bottom: -14,
-                            child: Text('You', style: TextStyle(color: Colors.white70, fontSize: 10)),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
+        );
+      },
+    );
+  }
 
-              // Center message
-              const Center(child: Text('Press the mood button to set your mood • Tap other bubbles to send support', style: TextStyle(color: Colors.white70))),
-            ],
-          ),
+  Widget _buildBubbleUI() {
+    final color = _moodColors[widget.pulse.mood]!;
+    return Container(
+      width: widget.config.size,
+      height: widget.config.size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color.withOpacity(0.7), color.withOpacity(0.2)],
         ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.3),
+            blurRadius: 5,
+            spreadRadius: 2,
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Set mood',
-        child: const Icon(Icons.mood),
-        onPressed: _openMoodPicker,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _moodIcons[widget.pulse.mood]!,
+              style: TextStyle(fontSize: widget.config.size * 0.45),
+            ),
+            if (widget.pulse.supports.isNotEmpty)
+              Text(
+                "${widget.pulse.supports.length}❤️",
+                style: const TextStyle(
+                  fontSize: 9,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _MyMoodsPage extends StatelessWidget {
-  final List<_Particle> particles;
-  const _MyMoodsPage({required this.particles, super.key});
+class _BackgroundParticle extends StatefulWidget {
+  const _BackgroundParticle();
+
+  @override
+  State<_BackgroundParticle> createState() => _BackgroundParticleState();
+}
+
+class _BackgroundParticleState extends State<_BackgroundParticle>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Offset pos;
+
+  @override
+  void initState() {
+    super.initState();
+    pos = Offset(Random().nextDouble() * 400, Random().nextDouble() * 800);
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5 + Random().nextInt(5)),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('My Moods')),
-      body: particles.isEmpty
-          ? const Center(child: Text('You have no recorded moods yet.'))
-          : ListView.builder(
-              itemCount: particles.length,
-              itemBuilder: (context, index) {
-                final p = particles[index];
-                return ListTile(
-                  leading: Icon(_moodIcons[p.mood], color: _moodColors[p.mood]),
-                  title: Text(_moodLabels[p.mood]!),
-                  subtitle: p.supports.isEmpty ? const Text('No support received') : Text('${p.supports.length} support(s) received'),
-                  trailing: p.supports.isEmpty
-                      ? null
-                      : IconButton(
-                          icon: const Icon(Icons.info_outline),
-                          onPressed: () {
-                            showModalBottomSheet<void>(
-                                context: context,
-                                builder: (_) {
-                                  return ListView(
-                                    shrinkWrap: true,
-                                    children: p.supports.map((s) => ListTile(title: Text(s))).toList(),
-                                  );
-                                });
-                          },
-                        ),
-                );
-              },
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (context, child) => Positioned(
+        left: pos.dx,
+        top: pos.dy - (_ctrl.value * 100),
+        child: Opacity(
+          opacity: 0.1,
+          child: Container(
+            width: 2,
+            height: 2,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
             ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -18,7 +18,7 @@ class MyHomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 30),
-            const Text('Welcome to ZenMind', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text('Welcome to GlobalPulse', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             const Text('A tiny app to support your mental health — breathing and mood check tools.'),
             const SizedBox(height: 24),
@@ -44,7 +44,6 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-// Minimal stub pages to keep the app self-contained
 class _StubBreathingPage extends StatelessWidget {
   const _StubBreathingPage({super.key});
 

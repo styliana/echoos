@@ -10,11 +10,11 @@ class BreathingPage extends StatefulWidget {
 
 class _BreathingPageState extends State<BreathingPage> {
   bool _isActive = false;
-  double _size = 100.0;
-  String _text = "Tap to Start";
+  double _size = 160.0;
+  String _statusText = "Breathe";
+  String _subText = "Tap to begin your journey";
   Timer? _timer;
 
-  // Breathing Cycle Config [cite: 243]
   final Duration _inhaleDuration = const Duration(seconds: 4);
   final Duration _holdDuration = const Duration(seconds: 2);
   final Duration _exhaleDuration = const Duration(seconds: 4);
@@ -32,47 +32,53 @@ class _BreathingPageState extends State<BreathingPage> {
     if (mounted) {
       setState(() {
         _isActive = false;
-        _size = 100.0;
-        _text = "Stopped";
+        _size = 160.0;
+        _statusText = "Breathe";
+        _subText = "Session complete";
       });
     }
   }
 
   void _start() {
-    setState(() => _isActive = true);
+    setState(() {
+      _isActive = true;
+      _statusText = "Get Ready";
+    });
     _runCycle();
   }
 
   void _runCycle() {
     if (!_isActive) return;
 
-    // 1. Inhale
-    if (mounted) {
-      setState(() {
-        _size = 300.0;
-        _text = "Breathe In...";
-      });
-    }
+    // inhale
+    setState(() {
+      _size = 280.0;
+      _statusText = "Inhale";
+      _subText = "Fill your lungs with light";
+    });
 
     _timer = Timer(_inhaleDuration, () {
       if (!_isActive) return;
-      
-      // 2. Hold
-      if (mounted) setState(() => _text = "Hold...");
-      
+
+      // hold
+      setState(() {
+        _statusText = "Hold";
+        _subText = "Find your inner stillness";
+      });
+
       _timer = Timer(_holdDuration, () {
         if (!_isActive) return;
 
-        // 3. Exhale
-        if (mounted) {
-          setState(() {
-            _size = 100.0;
-            _text = "Breathe Out...";
-          });
-        }
-        
-        // Loop
-        _timer = Timer(_exhaleDuration, _runCycle);
+        // exhale
+        setState(() {
+          _size = 160.0;
+          _statusText = "Exhale";
+          _subText = "Release all tension";
+        });
+
+        _timer = Timer(_exhaleDuration, () {
+          if (_isActive) _runCycle();
+        });
       });
     });
   }
@@ -86,51 +92,143 @@ class _BreathingPageState extends State<BreathingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _text, 
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w300)
-            ),
-            const SizedBox(height: 60),
-            // The "Lungs" Circle
-            AnimatedContainer(
-              duration: _text.contains("Hold") 
-                  ? const Duration(milliseconds: 0) // No animation during hold
-                  : (_size > 150 ? _inhaleDuration : _exhaleDuration),
-              curve: Curves.easeInOut,
-              width: _size,
-              height: _size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                gradient: RadialGradient(
-                  colors: [
-                    Colors.tealAccent.withOpacity(0.5), 
-                    Colors.transparent
-                  ],
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 55,
+            left: 30,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "DeepBreath",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 34,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -1,
+                  ),
                 ),
-                boxShadow: [
-                   BoxShadow(
-                     color: Colors.tealAccent, 
-                     blurRadius: _size / 3, 
-                     spreadRadius: 5
-                   )
-                ]
+                Text(
+                  "Inner Peace",
+                  style: TextStyle(
+                    color: const Color(0xFFB2FEFA).withOpacity(0.8),
+                    fontSize: 20,
+                    fontFamily: 'Georgia',
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 2,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  height: 2,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFB2FEFA), Colors.transparent],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: _statusText == "Hold"
+                      ? const Duration(milliseconds: 0)
+                      : const Duration(seconds: 4),
+                  curve: Curves.easeInOutSine,
+                  width: _size,
+                  height: _size,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const RadialGradient(
+                      colors: [
+                        Color(0xFFB2FEFA),
+                        Color(0xFF0ED2F7),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF0ED2F7).withOpacity(0.3),
+                        blurRadius: 50,
+                        spreadRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: _size * 0.8,
+                      height: _size * 0.8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white24, width: 1),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 60),
+                Text(
+                  _statusText,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w200,
+                    letterSpacing: 4,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _subText,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.4),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Positioned(
+            bottom: 80,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: GestureDetector(
+                onTap: _toggleBreathing,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: _isActive
+                        ? Colors.white.withOpacity(0.1)
+                        : const Color(0xFF1A1A1A),
+                    borderRadius: BorderRadius.circular(40),
+                    border: Border.all(
+                      color: _isActive ? Colors.redAccent.withOpacity(0.5) : Colors.white10,
+                    ),
+                  ),
+                  child: Text(
+                    _isActive ? "STOP" : "START",
+                    style: TextStyle(
+                      color: _isActive ? Colors.redAccent : const Color(0xFFB2FEFA),
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 100),
-            ElevatedButton(
-              onPressed: _toggleBreathing,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _isActive ? Colors.red.withOpacity(0.2) : Colors.teal.withOpacity(0.2),
-              ),
-              child: Text(_isActive ? "Stop Session" : "Start Breathing"),
-            )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -15,7 +15,6 @@ class _PulseParticleState extends State<PulseParticle> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    // Creates a breathing/pulsing animation effect
     _controller = AnimationController(
       vsync: this, 
       duration: const Duration(seconds: 4)
