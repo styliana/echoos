@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "928498423530",
+    "project_id": "belfort-68356",
+    "storage_bucket": "belfort-68356.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:928498423530:android:ce488a9b081e2ab8c8e993",
+        "android_client_info": {
+          "package_name": "com.example.belfort"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgFxYereXa5K9kkEvX8yh7K0wAzGYlK7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
