@@ -42,7 +42,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F0F),
+    backgroundColor: const Color.fromARGB(255, 26, 33, 46),
       body: Stack(
         children: [
           IndexedStack(
@@ -51,13 +51,11 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
           ),
 
           Positioned(
-            top: MediaQuery.of(context).padding.top + 10,
-            right: 20,
+            top: MediaQuery.of(context).padding.top +30,
+            right: 15,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.4),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white10),
               ),
               child: IconButton(
                 icon: const Icon(Icons.logout_rounded, color: Colors.white70),
@@ -66,9 +64,14 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
               ),
             ),
           ),
+           Positioned(
+          left: 0,
+          right: 0,
+          bottom: 10,
+          child: _buildModernZenBar(),
+        ),
         ],
       ),
-      bottomNavigationBar: _buildModernZenBar(),
     );
   }
 
@@ -99,18 +102,27 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   Widget _buildModernZenBar() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
-      color: Colors.transparent,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 40),
         height: 65,
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(50, 44, 51, 75), 
+              Color.fromARGB(100, 77, 103, 155),
+              Color.fromARGB(150, 77, 103, 155),
+              Color.fromARGB(100, 77, 103, 155),
+              Color.fromARGB(50, 44, 51, 75), 
+            ],
+          ),
           borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.4),
+              color: const Color.fromARGB(255, 15, 14, 26).withOpacity(0.5),
               blurRadius: 20,
-              offset: const Offset(0, 10),
+              offset: const Offset(5, 20),
             ),
           ],
         ),

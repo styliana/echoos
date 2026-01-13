@@ -12,7 +12,7 @@ class _BreathingPageState extends State<BreathingPage> {
   bool _isActive = false;
   double _size = 160.0;
   String _statusText = "Breathe";
-  String _subText = "Tap to begin your journey";
+  String _subText = "Take a moment for yourself";
   Timer? _timer;
 
   final Duration _inhaleDuration = const Duration(seconds: 4);
@@ -92,11 +92,24 @@ class _BreathingPageState extends State<BreathingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Stack(
         children: [
+          Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Color.fromARGB(255, 21, 24, 36), 
+                      Color(0xFF1E2235), // middle
+                      Color.fromARGB(255, 39, 52, 78), // top-left
+                      Color.fromARGB(255, 102, 115, 136), // bottom-right
+                    ],
+                  ),
+                ),
+              ),
           Positioned(
-            top: 55,
+            top: 30,
             left: 30,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +152,7 @@ class _BreathingPageState extends State<BreathingPage> {
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children : [
                 AnimatedContainer(
                   duration: _statusText == "Hold"
                       ? const Duration(milliseconds: 0)
@@ -163,7 +176,8 @@ class _BreathingPageState extends State<BreathingPage> {
                       ),
                     ],
                   ),
-                  child: Center(
+                  child: GestureDetector( 
+                    onTap: _toggleBreathing, 
                     child: Container(
                       width: _size * 0.8,
                       height: _size * 0.8,
@@ -184,7 +198,7 @@ class _BreathingPageState extends State<BreathingPage> {
                     letterSpacing: 4,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 2),
                 Text(
                   _subText,
                   style: TextStyle(
@@ -194,38 +208,6 @@ class _BreathingPageState extends State<BreathingPage> {
                   ),
                 ),
               ],
-            ),
-          ),
-
-          Positioned(
-            bottom: 80,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: GestureDetector(
-                onTap: _toggleBreathing,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  decoration: BoxDecoration(
-                    color: _isActive
-                        ? Colors.white.withOpacity(0.1)
-                        : const Color(0xFF1A1A1A),
-                    borderRadius: BorderRadius.circular(40),
-                    border: Border.all(
-                      color: _isActive ? Colors.redAccent.withOpacity(0.5) : Colors.white10,
-                    ),
-                  ),
-                  child: Text(
-                    _isActive ? "STOP" : "START",
-                    style: TextStyle(
-                      color: _isActive ? Colors.redAccent : const Color(0xFFB2FEFA),
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ),
-              ),
             ),
           ),
         ],
