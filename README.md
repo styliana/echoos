@@ -15,6 +15,10 @@ UI - RENATO
 - navbar click on the button not only
 - change colors and make color palette
 
+MORE
+- update readme with description
+- update slides with screens & info!!!!!!!!!!!!!!
+
 - emotions colors so far:const _moodColorsCalendar = {
   Mood.happy: Colors.amber,
   Mood.stressed: Colors.redAccent,
