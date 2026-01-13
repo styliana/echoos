@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'emotion_calendar_page.dart'; // Import the new calendar page
+import 'emotion_calendar_page.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});

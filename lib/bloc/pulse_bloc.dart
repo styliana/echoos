@@ -47,6 +47,7 @@ class PulseBloc extends Bloc<PulseEvent, PulseState> {
       await _firestore.collection('pulses').add({
         'mood': event.mood.toString(),
         'userId': uid,
+        'comment': event.comment,
         'supports': [],
         'createdAt': FieldValue.serverTimestamp(),
       });
@@ -56,6 +57,28 @@ class PulseBloc extends Bloc<PulseEvent, PulseState> {
       await _firestore.collection('pulses').doc(event.pulseId).update({
         'supports': FieldValue.arrayUnion([event.message])
       });
+    });
+
+    on<ToggleLike>((event, emit) async {
+      try {
+        final pulseRef = _firestore.collection('pulses').doc(event.pulseId);
+        final doc = await pulseRef.get();
+        if (!doc.exists) return;
+
+        final List<String> likes = List<String>.from(doc.data()?['likes'] ?? []);
+
+        if (likes.contains(event.userId)) {
+          await pulseRef.update({
+            'likes': FieldValue.arrayRemove([event.userId])
+          });
+        } else {
+          await pulseRef.update({
+            'likes': FieldValue.arrayUnion([event.userId])
+          });
+        }
+      } catch (e) {
+        print("Error toggling like: $e");
+      }
     });
   }
 }

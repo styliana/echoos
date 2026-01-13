@@ -198,7 +198,7 @@ class _BreathingPageState extends State<BreathingPage> {
           ),
 
           Positioned(
-            bottom: 80,
+            bottom: 35,
             left: 0,
             right: 0,
             child: Center(
