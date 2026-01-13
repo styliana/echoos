@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'emotion_calendar_page.dart'; // Import the new calendar page
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
@@ -78,7 +79,8 @@ class StatsPage extends StatelessWidget {
               ),
             ),
 
-            _buildEmotionCalendar(),
+            // Pass context to the builder method
+            _buildEmotionCalendar(context),
 
             const Divider(color: Colors.white10, height: 40),
 
@@ -96,18 +98,30 @@ class StatsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmotionCalendar() {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14.0),
-            child: Column(
+  // Updated to navigate to the new page
+  Widget _buildEmotionCalendar(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const EmotionCalendarPage()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Emotion Calendar",
                   style: TextStyle(
                     color: Colors.white,
@@ -115,54 +129,23 @@ class StatsPage extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
+                const SizedBox(height: 6),
                 Text(
-                  'Calendar by month will appear here...',
-                  style: TextStyle(color: Colors.grey),
+                  'Tap to view your full history',
+                  style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 14),
                 ),
               ],
             ),
-          ),
-
-          const SizedBox(height: 12),
-
-          // TODO: RE-IMPLEMENT AS A MONTHLY GRID (7 DAYS PER ROW)
-          // Use a GridView.builder with crossAxisCount: 7
-          // Logic should display days for each month and show the recorded emotion per day
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCalendarDayTile(int index) {
-    // TODO: Connect to your emotion data provider
-    bool hasEmotion = false;
-
-    return Container(
-      width: 55,
-      margin: const EdgeInsets.only(right: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "${DateTime.now().subtract(Duration(days: index)).day}",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.purple.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.calendar_month, color: Colors.purpleAccent),
             ),
-          ),
-          const SizedBox(height: 8),
-          Icon(
-            hasEmotion ? Icons.face : Icons.radio_button_off,
-            color: hasEmotion ? Colors.purpleAccent : Colors.white24,
-            size: 20,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
