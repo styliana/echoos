@@ -1,4 +1,18 @@
-# GlobalPulse
+# Echoos
+
+## TODO
+- remove option to continue as guest
+- (brathing page) start/stop button to the down
+- add emotion calendar
+- make emotion streak/support received/messages sent - to be real
+- (global pulse) add input field in adding emotion
+- (global pulse) when clicking bubble in send support modal view we can see the user's comment how they feel and send our comment
+- (optional) reactions to sb' emotion
+
+UI
+- click and slide to another view
+- navbar click on the button not only
+- change colors and make color palette
 
 A new Flutter project. Echoos  
 Our slides: [Click here](https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKmFmZv-86w/edit?utm_content=DAG-Oiy4wJM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
@@ -27,3 +41,5 @@ Our slides: [Click here](https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKm
 * Deep black theme (`#0F0F0F`)
 * Calm background particles and physics-based animations
 * Premium feel using elegant serif typography (Georgia)
+
+
