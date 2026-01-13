@@ -14,6 +14,14 @@ UI
 - navbar click on the button not only
 - change colors and make color palette
 
+- emotions colors so far:const _moodColorsCalendar = {
+  Mood.happy: Colors.amber,
+  Mood.stressed: Colors.redAccent,
+  Mood.sad: Colors.blueGrey,
+  Mood.angry: Colors.deepOrange,
+  Mood.calm: Colors.teal,
+};
+
 A new Flutter project. Echoos  
 Our slides: [Click here](https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKmFmZv-86w/edit?utm_content=DAG-Oiy4wJM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
