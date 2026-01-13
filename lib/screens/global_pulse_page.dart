@@ -48,6 +48,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
   Widget build(BuildContext context) {
     return BlocBuilder<PulseBloc, PulseState>(
       builder: (context, state) {
+        final myUid = FirebaseAuth.instance.currentUser?.uid;
         return Scaffold(
           backgroundColor: Colors.black,
           body: Stack(
@@ -102,7 +103,9 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                 return _FloatingBubble(
                   pulse: p,
                   config: config,
-                  onTap: () => _showSupportModal(context, p),
+                  onTap: p.userId == myUid
+                      ? () => _showCannotSupportSelfSnack(context)
+                      : () => _showSupportModal(context, p),
                 );
               }).toList(),
             ],
@@ -325,6 +328,17 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     );
   }
 
+  void _showCannotSupportSelfSnack(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("You can't send support to your own bubble."),
+        backgroundColor: Colors.grey[850],
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   void _showSupportModal(BuildContext context, MoodPulse pulse) {
     final TextEditingController controller = TextEditingController();
 
@@ -335,9 +349,9 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
-      builder: (context) => Padding(
+      builder: (sheetContext) => Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
           left: 30,
           right: 30,
           top: 30,
@@ -380,10 +394,12 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
             GestureDetector(
               onTap: () {
                 if (controller.text.trim().isNotEmpty) {
+                  // Use the outer `context` (the page's context) to access the Bloc
                   context.read<PulseBloc>().add(
                     AddSupport(pulse.id, controller.text.trim()),
                   );
-                  Navigator.pop(context);
+                  // Use the bottom sheet's context to pop the sheet
+                  Navigator.pop(sheetContext);
                 }
               },
               child: Container(
