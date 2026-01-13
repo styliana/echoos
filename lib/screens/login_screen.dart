@@ -144,19 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
 
-                          const SizedBox(height: 20),
 
-                          TextButton(
-                            onPressed: _signInAnonymously,
-                            child: Text(
-                              "Continue as Guest",
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.4),
-                                fontSize: 14,
-                                letterSpacing: 1,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                   ],
