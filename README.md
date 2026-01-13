@@ -1,7 +1,7 @@
 # Echoos
 
 ## TODO
-- remove option to continue as guest
+- remove option to continue as guest OLA
 - (brathing page) start/stop button to the down
 - add emotion calendar
 - make emotion streak/support received/messages sent - to be real
