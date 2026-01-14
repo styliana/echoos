@@ -60,7 +60,7 @@ class MoodJourneyView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 30, bottom: 30),
+                padding: const EdgeInsets.only(top: 50, left: 30, bottom: 30),
                 child: Row(
                   children: [
                     IconButton(
@@ -78,14 +78,14 @@ class MoodJourneyView extends StatelessWidget {
                               color: Colors.white,
                               fontSize: 34,
                               fontWeight: FontWeight.w900,
-                              letterSpacing: -1,
+                              letterSpacing: 2.5,
                             ),
                           ),
                           Text(
                             "Personal history",
                             style: TextStyle(
                               color: Colors.blueAccent.withOpacity(0.8),
-                              fontSize: 20,
+                              fontSize: 16,
                               fontFamily: 'Georgia',
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.w300,

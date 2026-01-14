@@ -69,7 +69,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
               ...List.generate(15, (index) => const _BackgroundParticle()),
 
               Positioned(
-                top: 70,
+                top: 50,
                 left: 30,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,9 +95,9 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(top: 8,left: 8),
                       height: 2,
-                      width: 40,
+                      width: 90,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         gradient: const LinearGradient(

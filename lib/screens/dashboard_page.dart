@@ -25,7 +25,7 @@ class _DashboardPageState extends State<DashboardPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error logging out: $e')),
+          SnackBar(content: Text('You logged out')),
         );
       }
     }
@@ -52,7 +52,7 @@ class _DashboardPageState extends State<DashboardPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 30, bottom: 20),
+                padding: const EdgeInsets.only(top: 50, left: 30, bottom: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -68,7 +68,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     Text(
                       "Dashboard",
                       style: TextStyle(
-                        color: Colors.purple.withOpacity(0.8),
+                        color: Color(0xFFCE93D8).withOpacity(0.8),
                         fontSize: 20,
                         fontFamily: 'Georgia',
                         fontStyle: FontStyle.italic,
@@ -77,13 +77,13 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(top: 8,left: 8),
                       height: 2,
-                      width: 40,
+                      width: 90,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         gradient: const LinearGradient(
-                          colors: [Colors.purple, Colors.transparent],
+                          colors: [Color(0xFFCE93D8), Colors.transparent],
                         ),
                       ),
                     ),
@@ -99,7 +99,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     color: Colors.white.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.purple.withOpacity(0.3),
+                      color: Color(0xFFCE93D8).withOpacity(0.3),
                       width: 1,
                     ),
                   ),
@@ -112,8 +112,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           shape: BoxShape.circle,
                           gradient: RadialGradient(
                             colors: [
-                              Colors.purple.withOpacity(0.3),
-                              Colors.purple.withOpacity(0.1),
+                              Color(0xFFCE93D8).withOpacity(0.3),
+                              Color(0xFFCE93D8).withOpacity(0.1),
                             ],
                           ),
                         ),
@@ -168,7 +168,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       context,
                       title: 'Statistics',
                       icon: Icons.bar_chart_sharp,
-                      color: Colors.purple,
+                      color: Color(0xFFCE93D8),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const StatsPage()),
@@ -178,7 +178,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       context,
                       title: 'Calendar',
                       icon: Icons.calendar_month_sharp,
-                      color: Colors.purple,
+                      color: Color(0xFFCE93D8),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const EmotionCalendarPage()),
@@ -188,7 +188,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       context,
                       title: 'My journey',
                       icon: Icons.mail_sharp,
-                      color: Colors.purple,
+                      color: Color(0xFFCE93D8),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const MoodJourneyPage()),
