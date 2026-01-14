@@ -45,9 +45,13 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
     backgroundColor: const Color.fromARGB(255, 26, 33, 46),
       body: Stack(
         children: [
-          IndexedStack(
-            index: _selectedIndex,
+          PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(), // lock swipe (optional)
             children: _pages,
+            onPageChanged: (index) {
+              setState(() => _selectedIndex = index);
+            },
           ),
 
           Positioned(
@@ -139,10 +143,19 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   }
 
   Widget _buildNavItem(int index, IconData icon, String label, List<Color> gradientColors) {
+
     bool isSelected = _selectedIndex == index;
 
     return GestureDetector(
-      onTap: () => setState(() => _selectedIndex = index),
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        _pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 750),
+          curve: Curves.easeInOutCubic,
+        );
+      },
+
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -185,4 +198,18 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
       ),
     );
   }
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
 }
