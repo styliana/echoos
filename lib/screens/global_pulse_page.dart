@@ -86,7 +86,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                     Text(
                       "Community",
                       style: TextStyle(
-                        color: Colors.tealAccent.withOpacity(0.8),
+                        color: Colors.yellow.withOpacity(0.8),
                         fontSize: 20,
                         fontFamily: 'Georgia',
                         fontStyle: FontStyle.italic,
@@ -101,7 +101,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         gradient: const LinearGradient(
-                          colors: [Colors.tealAccent, Colors.transparent],
+                          colors: [Colors.yellow, Colors.transparent],
                         ),
                       ),
                     ),

@@ -84,7 +84,7 @@ class MoodJourneyView extends StatelessWidget {
                           Text(
                             "Personal history",
                             style: TextStyle(
-                              color: Colors.tealAccent.withOpacity(0.8),
+                              color: Colors.blueAccent.withOpacity(0.8),
                               fontSize: 20,
                               fontFamily: 'Georgia',
                               fontStyle: FontStyle.italic,
@@ -147,10 +147,6 @@ class MoodJourneyView extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.08),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: _moodColors[pulse.mood]!.withOpacity(0.3),
-              width: 1,
-            ),
           ),
           child: Row(
             children: [
