@@ -1,9 +1,9 @@
+import 'package:belfort/screens/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'global_pulse_page.dart';
 import 'breathing_page.dart';
-import 'stats_page.dart';
 
 class MainNavigationWrapper extends StatefulWidget {
   const MainNavigationWrapper({super.key});
@@ -18,26 +18,10 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   final List<Widget> _pages = [
     const GlobalPulsePage(),
     const BreathingPage(),
-    const StatsPage(),
+    const DashboardPage(),
   ];
 
-  Future<void> _handleLogout() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-
-      await GoogleSignIn().signOut();
-
-      if (mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error logging out: $e')),
-        );
-      }
-    }
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -54,20 +38,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
             },
           ),
 
-          Positioned(
-            top: MediaQuery.of(context).padding.top +30,
-            right: 15,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.logout_rounded, color: Colors.white70),
-                onPressed: () => _showLogoutDialog(context),
-                tooltip: 'Logout',
-              ),
-            ),
-          ),
+
            Positioned(
           left: 0,
           right: 0,
@@ -79,7 +50,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
+  /*void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -101,7 +72,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
         ],
       ),
     );
-  }
+  }*/
 
   Widget _buildModernZenBar() {
     return Container(

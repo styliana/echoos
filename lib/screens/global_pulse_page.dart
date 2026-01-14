@@ -138,14 +138,8 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 90), 
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            heroTag: "history",
-            onPressed: () => _showHistory(context, state.pulses),
-            backgroundColor: Colors.white10,
-            child: const Icon(Icons.mail_sharp, color: Colors.white),
-          ),
           FloatingActionButton(
             heroTag: "add",
             onPressed: state.hasPostedToday ? null : () => _showAddMoodDialog(context),
