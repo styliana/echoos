@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "GlobalPulse",
+                      "Echoos",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 42,
