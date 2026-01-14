@@ -83,13 +83,13 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A1A),
+        backgroundColor: Color.fromARGB(255, 25, 29, 44),
         title: const Text("Logout", style: TextStyle(color: Colors.white)),
         content: const Text("Are you sure you want to log out?", style: TextStyle(color: Colors.white70)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: const Text("Cancel", style: TextStyle(color: Colors.tealAccent),),
           ),
           TextButton(
             onPressed: () {
@@ -151,13 +151,13 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
         setState(() => _selectedIndex = index);
         _pageController.animateToPage(
           index,
-          duration: const Duration(milliseconds: 750),
-          curve: Curves.easeInOutCubic,
+          duration: const Duration(milliseconds: 550),
+          curve: Curves.easeInOutExpo,
         );
       },
 
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 400),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: isSelected
             ? BoxDecoration(
@@ -183,7 +183,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
             ),
             if (isSelected)
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 6.0),
                 child: Text(
                   label,
                   style: TextStyle(

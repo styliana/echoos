@@ -62,9 +62,21 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F0F),
       body: Stack(
         children: [
+          Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF1E2235),
+                      Color.fromARGB(255, 25, 29, 44), 
+                      Color.fromARGB(255, 0, 0, 0), 
+                    ],
+                  ),
+                ),
+              ),
           ...List.generate(15, (index) => const _BackgroundParticle()),
 
           SafeArea(
@@ -75,12 +87,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "Echoos",
+                      "e c h o o s",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 42,
+                        fontSize: 60,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: -1.5,
+                        letterSpacing: 1,
                       ),
                     ),
                     Text(
@@ -97,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 12),
                     Container(
                       height: 2,
-                      width: 60,
+                      width: 140,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         gradient: const LinearGradient(
@@ -178,7 +190,7 @@ class _BackgroundParticleState extends State<_BackgroundParticle>
     size = 2 + Random().nextDouble() * 4;
     _ctrl = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5 + Random().nextInt(5)),
+      duration: Duration(seconds: 4 + Random().nextInt(5)),
     )..repeat(reverse: true);
   }
 

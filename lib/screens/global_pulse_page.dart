@@ -360,7 +360,6 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF1A1A1A),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
       builder: (sheetContext) => BlocBuilder<PulseBloc, PulseState>(
