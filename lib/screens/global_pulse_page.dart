@@ -59,9 +59,9 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                     end: Alignment.bottomRight,
                     colors: [
                       Color.fromARGB(255, 21, 24, 36), 
-                      Color(0xFF1E2235), // middle
-                      Color.fromARGB(255, 39, 52, 78), // top-left
-                      Color.fromARGB(255, 102, 115, 136), // bottom-right
+                      Color(0xFF1E2235),
+                      Color.fromARGB(255, 39, 52, 78),
+                      Color.fromARGB(255, 102, 115, 136),
                     ],
                   ),
                 ),
@@ -69,13 +69,13 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
               ...List.generate(15, (index) => const _BackgroundParticle()),
 
               Positioned(
-                top: 40,
+                top: 70,
                 left: 30,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "GlobalPulse",
+                      "E c h o o s",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 34,
@@ -113,13 +113,12 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                 _bubbleConfigs.putIfAbsent(p.id, () => _BubbleSettings());
                 final config = _bubbleConfigs[p.id]!;
                 
-                // --- CHANGE 1: Determine if this bubble belongs to the current user ---
-                final isMine = p.userId == myUid; 
+                final isMine = p.userId == myUid;
 
                 return _FloatingBubble(
                   pulse: p,
                   config: config,
-                  isMine: isMine, // --- CHANGE 2: Pass this value to the bubble ---
+                  isMine: isMine,
                   onTap: isMine
                       ? () => _showCannotSupportSelfSnack(context)
                       : () => _showSupportModal(context, p),
@@ -354,7 +353,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent, // 👈 required
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
@@ -376,9 +375,9 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFF161A2B), // dark top
-                  Color(0xFF101424), // solid mid
-                  Color(0xFF000000), // opaque bottom
+                  Color(0xFF161A2B),
+                  Color(0xFF101424),
+                  Color(0xFF000000),
                 ],
               ),
               borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
@@ -391,7 +390,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
               return Opacity(
                 opacity: value,
                 child: Transform.translate(
-                  offset: Offset(0, 20 * (1 - value)), // slide up
+                  offset: Offset(0, 20 * (1 - value)),
                   child: child,
                 ),
               );
@@ -407,7 +406,6 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Header ───────────────────────────────
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -454,7 +452,6 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
 
                   const SizedBox(height: 20),
 
-                  // ── Comment Card ─────────────────────────
                   if (updatedPulse.comment != null &&
                       updatedPulse.comment!.isNotEmpty)
                     Container(
@@ -506,7 +503,6 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
 
                   const SizedBox(height: 20),
 
-                  // ── Input ────────────────────────────────
                   TextField(
                     controller: controller,
                     style: const TextStyle(color: Colors.white),
@@ -525,7 +521,6 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
 
                   const SizedBox(height: 20),
 
-                  // ── Button ───────────────────────────────
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.tealAccent.withOpacity(0.8),
@@ -640,8 +635,7 @@ class _FloatingBubbleState extends State<_FloatingBubble> with SingleTickerProvi
       height: widget.config.size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        // --- CHANGE 5: Apply white border if it is mine ---
-        border: widget.isMine 
+        border: widget.isMine
             ? Border.all(color: Colors.tealAccent.withOpacity(0.2), width: 3,) 
             : null,
         gradient: RadialGradient(colors: [color.withOpacity(0.7), color.withOpacity(0.2)]),

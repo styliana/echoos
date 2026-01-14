@@ -1,6 +1,4 @@
-import 'package:belfort/screens/dashboard_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:belfort/screens/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'global_pulse_page.dart';
 import 'breathing_page.dart';
@@ -21,8 +19,6 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
     const DashboardPage(),
   ];
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +27,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
         children: [
           PageView(
             controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(), // lock swipe (optional)
+            physics: const NeverScrollableScrollPhysics(),
             children: _pages,
             onPageChanged: (index) {
               setState(() => _selectedIndex = index);
@@ -49,30 +45,6 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
       ),
     );
   }
-
-  /*void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color.fromARGB(255, 25, 29, 44),
-        title: const Text("Logout", style: TextStyle(color: Colors.white)),
-        content: const Text("Are you sure you want to log out?", style: TextStyle(color: Colors.white70)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel", style: TextStyle(color: Colors.tealAccent),),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _handleLogout();
-            },
-            child: const Text("Logout", style: TextStyle(color: Colors.redAccent)),
-          ),
-        ],
-      ),
-    );
-  }*/
 
   Widget _buildModernZenBar() {
     return Container(
@@ -106,7 +78,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
           children: [
             _buildNavItem(0, Icons.emoji_emotions, "Pulse", const [Color(0xFFFFE082), Color(0xFFFFB300)]),
             _buildNavItem(1, Icons.spa, "Breathe", const [Color(0xFFB2FEFA), Color(0xFF0ED2F7)]),
-            _buildNavItem(2, Icons.stacked_bar_chart, "Stats", const [Color(0xFFF3E5F5), Color(0xFFCE93D8)]),
+            _buildNavItem(2, Icons.dashboard_customize, "Board", const [Color(0xFFF3E5F5), Color(0xFFCE93D8)]),
           ],
         ),
       ),

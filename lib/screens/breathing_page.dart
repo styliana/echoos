@@ -101,21 +101,21 @@ class _BreathingPageState extends State<BreathingPage> {
                     end: Alignment.bottomLeft,
                     colors: [
                       Color.fromARGB(255, 21, 24, 36), 
-                      Color(0xFF1E2235), // middle
-                      Color.fromARGB(255, 39, 52, 78), // top-left
-                      Color.fromARGB(255, 102, 115, 136), // bottom-right
+                      Color(0xFF1E2235),
+                      Color.fromARGB(255, 39, 52, 78),
+                      Color.fromARGB(255, 102, 115, 136),
                     ],
                   ),
                 ),
               ),
           Positioned(
-            top: 40,
+            top: 70,
             left: 30,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "DeepBreath",
+                  "E c h o o s",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 34,

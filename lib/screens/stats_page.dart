@@ -1,226 +1,230 @@
 import 'package:flutter/material.dart';
-import 'emotion_calendar_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../bloc/pulse_bloc.dart';
+import '../bloc/pulse_event.dart';
+import '../bloc/pulse_state.dart';
+import '../data/models/pulse_model.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
 
-  int get consecutiveDaysStreak => 0;
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => PulseBloc()..add(StreamPulses()),
+      child: const StatsView(),
+    );
+  }
+}
 
-  int get receivedMessagesCount => 0;
+class StatsView extends StatelessWidget {
+  const StatsView({super.key});
 
-  int get sentMessagesCount => 0;
+  int _calculateStreak(List<MoodPulse> pulses, String uid) {
+    final userPulses = pulses.where((p) => p.userId == uid).toList();
+    if (userPulses.isEmpty) return 0;
+
+    final dates = userPulses
+        .map((p) => DateTime(p.createdAt.year, p.createdAt.month, p.createdAt.day))
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    int streak = 0;
+    DateTime checkDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
+    if (dates.first.isBefore(checkDate) && dates.first.isBefore(checkDate.subtract(const Duration(days: 1)))) {
+      return 0;
+    }
+
+    for (var date in dates) {
+      if (date == checkDate || date == checkDate.subtract(const Duration(days: 1))) {
+        streak++;
+        checkDate = date.subtract(const Duration(days: 1));
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  int _calculateReceivedSupports(List<MoodPulse> pulses, String uid) {
+    return pulses
+        .where((p) => p.userId == uid)
+        .fold(0, (sum, p) => sum + p.supports.length);
+  }
+
+  int _calculateSentLikes(List<MoodPulse> pulses, String uid) {
+    return pulses.fold(0, (sum, p) {
+      return sum + (p.likes.contains(uid) ? 1 : 0);
+    });
+  }
+
+  int _calculateReceivedLikes(List<MoodPulse> pulses, String uid) {
+    return pulses
+        .where((p) => p.userId == uid)
+        .fold(0, (sum, p) => sum + p.likes.length);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     return Scaffold(
-      backgroundColor: Colors.black,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: FloatingActionButton(
-          heroTag: "stats_details",
-          onPressed: () => _showStatsModal(context),
-          backgroundColor: Colors.white10,
-          child: const Icon(Icons.bar_chart, color: Colors.white),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 8,
-                  left: 30,
-                  bottom: 20
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "GlobalPulse",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -1,
-                    ),
-                  ),
-                  Text(
-                    "Stats",
-                    style: TextStyle(
-                      color: Colors.purple.withOpacity(0.8),
-                      fontSize: 20,
-                      fontFamily: 'Georgia',
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 2,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    height: 2,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: const LinearGradient(
-                        colors: [Colors.purple, Colors.transparent],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Pass context to the builder method
-            _buildEmotionCalendar(context),
-
-            const Divider(color: Colors.white10, height: 40),
-
-            const Expanded(
-              child: Center(
-                child: Text(
-                  'Detailed history will appear here...',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Updated to navigate to the new page
-  Widget _buildEmotionCalendar(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const EmotionCalendarPage()),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Emotion Calendar",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Tap to view your full history',
-                  style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 14),
-                ),
-              ],
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.purple.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.calendar_month, color: Colors.purpleAccent),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showStatsModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF1A1A1A),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Your Statistics",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 24),
-              _statRow(
-                icon: Icons.local_fire_department,
-                label: "Emotion Streak",
-                value: "$consecutiveDaysStreak Days",
-                color: Colors.orange,
-              ),
-              const Divider(color: Colors.white10, height: 32),
-              _statRow(
-                icon: Icons.favorite,
-                label: "Support Received",
-                value: "$receivedMessagesCount Messages",
-                color: Colors.pinkAccent,
-              ),
-              const Divider(color: Colors.white10, height: 32),
-              _statRow(
-                icon: Icons.send_rounded,
-                label: "Messages Sent",
-                value: "$sentMessagesCount",
-                color: Colors.blueAccent,
-              ),
-              const SizedBox(height: 16),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 21, 24, 36),
+              Color(0xFF1E2235),
+              Color.fromARGB(255, 39, 52, 78),
+              Color.fromARGB(255, 102, 115, 136),
             ],
           ),
-        );
-      },
+        ),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 30, bottom: 30),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Statistics",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 34,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -1,
+                            ),
+                          ),
+                          Text(
+                            "Your progress",
+                            style: TextStyle(
+                              color: Colors.blueAccent.withOpacity(0.8),
+                              fontSize: 20,
+                              fontFamily: 'Georgia',
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w300,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: BlocBuilder<PulseBloc, PulseState>(
+                  builder: (context, state) {
+                    if (state.isLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: Colors.blueAccent),
+                      );
+                    }
+
+                    final streak = _calculateStreak(state.pulses, uid);
+                    final receivedSupports = _calculateReceivedSupports(state.pulses, uid);
+                    final sentLikes = _calculateSentLikes(state.pulses, uid);
+                    final receivedLikes = _calculateReceivedLikes(state.pulses, uid);
+
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          _statCard(
+                            icon: Icons.local_fire_department,
+                            label: "Current Streak",
+                            value: "$streak Days",
+                            color: Colors.orange,
+                          ),
+                          const SizedBox(height: 16),
+                          _statCard(
+                            icon: Icons.favorite,
+                            label: "Support Received",
+                            value: "$receivedSupports",
+                            color: Colors.pinkAccent,
+                          ),
+                          const SizedBox(height: 16),
+                          _statCard(
+                            icon: Icons.thumb_up_alt_outlined,
+                            label: "Likes Sent",
+                            value: "$sentLikes",
+                            color: Colors.blueAccent,
+                          ),
+                          const SizedBox(height: 16),
+                          _statCard(
+                            icon: Icons.volunteer_activism,
+                            label: "Likes Received",
+                            value: "$receivedLikes",
+                            color: Colors.redAccent,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _statRow({
+  Widget _statCard({
     required IconData icon,
     required String label,
     required String value,
     required Color color,
   }) {
-    return Row(
-      children: [
-        CircleAvatar(
-          backgroundColor: color.withOpacity(0.1),
-          child: Icon(icon, color: color),
-        ),
-        const SizedBox(width: 16),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white70, fontSize: 16),
-        ),
-        const Spacer(),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 28),
           ),
-        ),
-      ],
+          const SizedBox(width: 20),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(color: Colors.white70, fontSize: 16),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
