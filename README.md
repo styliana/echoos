@@ -2,17 +2,16 @@
 
 ## TODO
 - ~~remove option to continue as guest OLA~~
-- (brathing page) start/stop button to the down MARVYN
+- ~~(brathing page) start/stop button to the down MARVYN~~ deleted
 - ~~add emotion calendar OLA~~
-- make emotion streak/support received/messages sent - to be real YUNUS
+- make emotion streak/support received/messages sent - to be real MARVYN
 - dashboard (stats page) YUNUS
-- (global pulse) add input field in adding emotion MARVYN
-- (global pulse) when clicking bubble in send support modal view we can see the user's comment how they feel and send our comment MARVYN
-- (optional) reactions to sb' emotion
+- ~~(global pulse) add input field in adding emotion MARVYN~~
+- ~~(global pulse) when clicking bubble in send support modal view we can see the user's comment how they feel and send our comment MARVYN~~
+- ~~(optional) reactions to sb' emotion~~ heart added
 
 UI - RENATO
-UI - RENATO
-- click and slide to another view
+- ~~click and slide to another view~~
 - navbar click on the button not only
 - change colors and make color palette
 
