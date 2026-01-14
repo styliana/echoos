@@ -50,13 +50,26 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
       builder: (context, state) {
         final myUid = FirebaseAuth.instance.currentUser?.uid;
         return Scaffold(
-          backgroundColor: Colors.black,
           body: Stack(
             children: [
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color.fromARGB(255, 21, 24, 36), 
+                      Color(0xFF1E2235), // middle
+                      Color.fromARGB(255, 39, 52, 78), // top-left
+                      Color.fromARGB(255, 102, 115, 136), // bottom-right
+                    ],
+                  ),
+                ),
+              ),
               ...List.generate(15, (index) => const _BackgroundParticle()),
 
               Positioned(
-                top: 58,
+                top: 30,
                 left: 30,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
