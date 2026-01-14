@@ -69,7 +69,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
               ...List.generate(15, (index) => const _BackgroundParticle()),
 
               Positioned(
-                top: 30,
+                top: 40,
                 left: 30,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

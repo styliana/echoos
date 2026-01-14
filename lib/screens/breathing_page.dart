@@ -109,7 +109,7 @@ class _BreathingPageState extends State<BreathingPage> {
                 ),
               ),
           Positioned(
-            top: 30,
+            top: 40,
             left: 30,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
