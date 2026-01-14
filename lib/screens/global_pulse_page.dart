@@ -162,7 +162,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Color.fromARGB(255, 25, 29, 44).withOpacity(0.9), 
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -202,7 +202,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900],
+        backgroundColor:Color.fromARGB(255, 25, 29, 44),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
@@ -285,7 +285,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Color.fromARGB(255, 25, 29, 44),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (innerContext) => StatefulBuilder(
         builder: (context, setModalState) => Padding(
@@ -356,7 +356,6 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF1A1A1A),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
       builder: (sheetContext) => BlocBuilder<PulseBloc, PulseState>(
