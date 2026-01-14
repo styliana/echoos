@@ -41,7 +41,19 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
-      body: Padding(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(255, 102, 115, 136),
+                Color.fromARGB(255, 39, 52, 78),
+                Color(0xFF1E2235),
+                Color.fromARGB(255, 25, 29, 44), 
+              ],
+            ),
+          ),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

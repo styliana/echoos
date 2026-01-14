@@ -4,16 +4,10 @@ import 'emotion_calendar_page.dart';
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
 
-  // TODO: Implement logic to fetch emotions by date from DB/State
-  // Map<DateTime, String> get emotionsData => ...
-
-  // TODO: Calculate the number of consecutive days an emotion was set (streak)
   int get consecutiveDaysStreak => 0;
 
-  // TODO: Fetch the count of support messages received
   int get receivedMessagesCount => 0;
 
-  // TODO: Fetch the count of messages sent
   int get sentMessagesCount => 0;
 
   @override
