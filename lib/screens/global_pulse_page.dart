@@ -112,11 +112,15 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
               ...state.pulses.map((p) {
                 _bubbleConfigs.putIfAbsent(p.id, () => _BubbleSettings());
                 final config = _bubbleConfigs[p.id]!;
+                
+                // --- CHANGE 1: Determine if this bubble belongs to the current user ---
+                final isMine = p.userId == myUid; 
 
                 return _FloatingBubble(
                   pulse: p,
                   config: config,
-                  onTap: p.userId == myUid
+                  isMine: isMine, // --- CHANGE 2: Pass this value to the bubble ---
+                  onTap: isMine
                       ? () => _showCannotSupportSelfSnack(context)
                       : () => _showSupportModal(context, p),
                 );
@@ -145,7 +149,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
           FloatingActionButton(
             heroTag: "add",
             onPressed: state.hasPostedToday ? null : () => _showAddMoodDialog(context),
-            backgroundColor: state.hasPostedToday ? Color.fromARGB(255, 39, 52, 78).withOpacity(0.2) : Color.fromARGB(255, 102, 115, 136).withOpacity(0.4),
+            backgroundColor: state.hasPostedToday ? const Color.fromARGB(255, 39, 52, 78).withOpacity(0.2) : const Color.fromARGB(255, 102, 115, 136).withOpacity(0.4),
             child: Icon(
               state.hasPostedToday ? Icons.check : Icons.add,
               color: Colors.white,
@@ -162,7 +166,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.grey[900],
+      backgroundColor: const Color.fromARGB(255, 25, 29, 44).withOpacity(0.9), 
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -202,7 +206,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900],
+        backgroundColor:const Color.fromARGB(255, 25, 29, 44),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
@@ -285,7 +289,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.grey[900],
+      backgroundColor: const Color.fromARGB(255, 25, 29, 44),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (innerContext) => StatefulBuilder(
         builder: (context, setModalState) => Padding(
@@ -379,6 +383,19 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF1E2235),
+                          Color.fromARGB(255, 25, 29, 44), 
+                          Color.fromARGB(255, 0, 0, 0), 
+                        ],
+                      ),
+                    ),
+                  ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -515,8 +532,14 @@ class _FloatingBubble extends StatefulWidget {
   final MoodPulse pulse;
   final _BubbleSettings config;
   final VoidCallback onTap;
+  final bool isMine; // --- CHANGE 3: Added variable ---
 
-  const _FloatingBubble({required this.pulse, required this.config, required this.onTap});
+  const _FloatingBubble({
+    required this.pulse,
+    required this.config,
+    required this.onTap,
+    required this.isMine, // --- CHANGE 4: Added to constructor ---
+  });
 
   @override
   State<_FloatingBubble> createState() => _FloatingBubbleState();
@@ -563,6 +586,10 @@ class _FloatingBubbleState extends State<_FloatingBubble> with SingleTickerProvi
       height: widget.config.size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
+        // --- CHANGE 5: Apply white border if it is mine ---
+        border: widget.isMine 
+            ? Border.all(color: Colors.white, width: 2.5) 
+            : null,
         gradient: RadialGradient(colors: [color.withOpacity(0.7), color.withOpacity(0.2)]),
         boxShadow: [BoxShadow(color: color.withOpacity(0.3), blurRadius: 10)],
       ),
