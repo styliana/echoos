@@ -132,7 +132,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
 
   Widget _buildFabRow(BuildContext context, PulseState state) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 90), 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -145,10 +145,10 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
           FloatingActionButton(
             heroTag: "add",
             onPressed: state.hasPostedToday ? null : () => _showAddMoodDialog(context),
-            backgroundColor: state.hasPostedToday ? Colors.grey : Colors.tealAccent,
+            backgroundColor: state.hasPostedToday ? Color.fromARGB(255, 39, 52, 78).withOpacity(0.2) : Color.fromARGB(255, 102, 115, 136).withOpacity(0.4),
             child: Icon(
               state.hasPostedToday ? Icons.check : Icons.add,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
         ],
