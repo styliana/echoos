@@ -4,15 +4,23 @@ sealed class PulseEvent {}
 
 class StreamPulses extends PulseEvent {}
 
-/// create a pulse
+/// ADD a pulse
 class AddPulse extends PulseEvent {
   final Mood mood;
-  AddPulse(this.mood);
+  final String? comment;
+  AddPulse(this.mood, {this.comment});
 }
 
-/// add a support in a pulse
+/// ADD a support in a pulse
 class AddSupport extends PulseEvent {
   final String pulseId;
   final String message;
   AddSupport(this.pulseId, this.message);
+}
+
+/// ADD/DELETE like in a pulse
+class ToggleLike extends PulseEvent {
+  final String pulseId;
+  final String userId;
+  ToggleLike(this.pulseId, this.userId);
 }

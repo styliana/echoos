@@ -61,7 +61,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "GlobalPulse",
                       style: TextStyle(
                         color: Colors.white,
@@ -110,8 +110,7 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
               }).toList(),
             ],
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: _buildFabRow(context, state),
         );
       },
@@ -128,16 +127,12 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
             heroTag: "history",
             onPressed: () => _showHistory(context, state.pulses),
             backgroundColor: Colors.white10,
-            child: const Icon(Icons.history, color: Colors.white),
+            child: const Icon(Icons.mail_sharp, color: Colors.white),
           ),
           FloatingActionButton(
             heroTag: "add",
-            onPressed: state.hasPostedToday
-                ? null
-                : () => _showAddMoodDialog(context),
-            backgroundColor: state.hasPostedToday
-                ? Colors.grey
-                : Colors.tealAccent,
+            onPressed: state.hasPostedToday ? null : () => _showAddMoodDialog(context),
+            backgroundColor: state.hasPostedToday ? Colors.grey : Colors.tealAccent,
             child: Icon(
               state.hasPostedToday ? Icons.check : Icons.add,
               color: Colors.black,
@@ -164,46 +159,25 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
           children: [
             const Text(
               "My Mood Journey",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const Divider(color: Colors.white24),
             Expanded(
               child: myHistory.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No history yet",
-                        style: TextStyle(color: Colors.white54),
-                      ),
-                    )
+                  ? const Center(child: Text("No history yet", style: TextStyle(color: Colors.white54)))
                   : ListView.builder(
-                      itemCount: myHistory.length,
-                      itemBuilder: (context, index) {
-                        final p = myHistory[index];
-                        return ListTile(
-                          leading: Text(
-                            _moodIcons[p.mood]!,
-                            style: const TextStyle(fontSize: 24),
-                          ),
-                          title: Text(
-                            "Mood from ${p.createdAt.day}/${p.createdAt.month}",
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            "${p.supports.length} supports received",
-                            style: const TextStyle(color: Colors.tealAccent),
-                          ),
-                          trailing: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white24,
-                          ),
-                          onTap: () => _showComments(context, p),
-                        );
-                      },
-                    ),
+                itemCount: myHistory.length,
+                itemBuilder: (context, index) {
+                  final p = myHistory[index];
+                  return ListTile(
+                    leading: Text(_moodIcons[p.mood]!, style: const TextStyle(fontSize: 24)),
+                    title: Text("Mood from ${p.createdAt.day}/${p.createdAt.month}", style: const TextStyle(color: Colors.white)),
+                    subtitle: Text("${p.supports.length} supports • ${p.likes.length} likes", style: const TextStyle(color: Colors.tealAccent)),
+                    trailing: const Icon(Icons.chevron_right, color: Colors.white24),
+                    onTap: () => _showComments(context, p),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -231,52 +205,52 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
           width: double.maxFinite,
           child: p.supports.isEmpty
               ? const Text(
-                  "No comments yet. Stay strong!",
-                  style: TextStyle(color: Colors.white70),
-                  textAlign: TextAlign.center,
-                )
+            "No comments yet. Stay strong!",
+            style: TextStyle(color: Colors.white70),
+            textAlign: TextAlign.center,
+          )
               : ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: p.supports.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final support = p.supports[index];
-                    return Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _moodColors[p.mood]!.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: _moodColors[p.mood]!.withOpacity(0.3),
-                            width: 1,
+            shrinkWrap: true,
+            itemCount: p.supports.length,
+            separatorBuilder: (context, index) =>
+            const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final support = p.supports[index];
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _moodColors[p.mood]!.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _moodColors[p.mood]!.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text("❤️", style: TextStyle(fontSize: 12)),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          support,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text("❤️", style: TextStyle(fontSize: 12)),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                support,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
+              );
+            },
+          ),
         ),
         actions: [
           TextButton(
@@ -290,40 +264,219 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
       ),
     );
   }
-
   void _showAddMoodDialog(BuildContext context) {
+    final TextEditingController commentController = TextEditingController();
+    Mood? selectedMood;
+    final pulseBloc = context.read<PulseBloc>();
+
     showModalBottomSheet(
       context: context,
-      builder: (innerContext) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "How are you feeling?",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: Mood.values
-                  .map(
-                    (m) => IconButton(
-                      icon: Text(
-                        _moodIcons[m]!,
-                        style: const TextStyle(fontSize: 40),
+      isScrollControlled: true,
+      backgroundColor: Colors.grey[900],
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (innerContext) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 20, right: 20, top: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Share your mood", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 12,
+                children: Mood.values.map((m) {
+                  final isSelected = selectedMood == m;
+                  return GestureDetector(
+                    onTap: () => setModalState(() => selectedMood = m),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.tealAccent.withOpacity(0.2) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: isSelected ? Colors.tealAccent : Colors.white10),
                       ),
-                      onPressed: () {
-                        context.read<PulseBloc>().add(AddPulse(m));
-                        Navigator.pop(innerContext);
-                      },
+                      child: Text(_moodIcons[m]!, style: const TextStyle(fontSize: 30)),
                     ),
-                  )
-                  .toList(),
-            ),
-            const SizedBox(height: 20),
-          ],
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: commentController,
+                style: const TextStyle(color: Colors.white),
+                maxLength: 15,
+                decoration: InputDecoration(
+                  hintText: "Optional note...",
+                  hintStyle: const TextStyle(color: Colors.white30),
+                  filled: true,
+                  fillColor: Colors.white10,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.tealAccent, foregroundColor: Colors.black),
+                  onPressed: () {
+                    if (selectedMood != null) {
+                      pulseBloc.add(AddPulse(selectedMood!, comment: commentController.text));
+                      Navigator.pop(innerContext);
+                    }
+                  },
+                  child: const Text("SHARE"),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  void _showSupportModal(BuildContext context, MoodPulse pulse) {
+    final TextEditingController controller = TextEditingController();
+    final pulseBloc = context.read<PulseBloc>();
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF1A1A1A),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+      builder: (sheetContext) => BlocBuilder<PulseBloc, PulseState>(
+        bloc: pulseBloc,
+        builder: (context, state) {
+          final updatedPulse = state.pulses.firstWhere(
+                (p) => p.id == pulse.id,
+            orElse: () => pulse,
+          );
+
+          final hasLiked = currentUserId != null && updatedPulse.likes.contains(currentUserId);
+
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+                left: 30,
+                right: 30,
+                top: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Pulse Details",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold)),
+                    GestureDetector(
+                      onTap: () {
+                        if (currentUserId != null) {
+                          pulseBloc.add(ToggleLike(updatedPulse.id, currentUserId));
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                              hasLiked ? Icons.favorite : Icons.favorite_border,
+                              color: hasLiked ? Colors.redAccent : Colors.white54),
+                          const SizedBox(width: 5),
+                          Text("${updatedPulse.likes.length}",
+                              style: TextStyle(
+                                  color: hasLiked
+                                      ? Colors.redAccent
+                                      : Colors.white54)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                if (updatedPulse.comment != null && updatedPulse.comment!.isNotEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.tealAccent.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.format_quote_rounded,
+                                color: Colors.tealAccent.withOpacity(0.5), size: 18),
+                            const SizedBox(width: 6),
+                            const Text(
+                              "COMMENT",
+                              style: TextStyle(
+                                color: Colors.tealAccent,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 2.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          updatedPulse.comment!,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontStyle: FontStyle.italic,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 20),
+
+                TextField(
+                  controller: controller,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Send support message...",
+                    hintStyle: const TextStyle(color: Colors.white24),
+                    filled: true,
+                    fillColor: Colors.white10,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.tealAccent,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                  ),
+                  onPressed: () {
+                    if (controller.text.isNotEmpty) {
+                      pulseBloc.add(AddSupport(updatedPulse.id, controller.text));
+                      Navigator.pop(sheetContext);
+                    }
+                  },
+                  child: const Text("SEND SUPPORT",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 30),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -338,104 +491,11 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
       ),
     );
   }
-
-  void _showSupportModal(BuildContext context, MoodPulse pulse) {
-    final TextEditingController controller = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: const Color(0xFF1A1A1A),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
-      builder: (sheetContext) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-          left: 30,
-          right: 30,
-          top: 30,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Send Support",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Send a kind word to someone feeling ${pulse.mood.name}",
-              style: TextStyle(color: Colors.white.withOpacity(0.5)),
-            ),
-            const SizedBox(height: 24),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Type your message...",
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-                filled: true,
-                fillColor: Colors.white.withOpacity(0.05),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                if (controller.text.trim().isNotEmpty) {
-                  // Use the outer `context` (the page's context) to access the Bloc
-                  context.read<PulseBloc>().add(
-                    AddSupport(pulse.id, controller.text.trim()),
-                  );
-                  // Use the bottom sheet's context to pop the sheet
-                  Navigator.pop(sheetContext);
-                }
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  color: Colors.tealAccent,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Center(
-                  child: Text(
-                    "SEND",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _BubbleSettings {
-  final double size = 40.0 + Random().nextDouble() * 40.0;
-  final Offset startPos = Offset(
-    Random().nextDouble() * 300,
-    150 + Random().nextDouble() * 400,
-  );
-  final double speed = 0.2 + Random().nextDouble() * 0.5;
+  final double size = 50.0 + Random().nextDouble() * 30.0;
+  final Offset startPos = Offset(Random().nextDouble() * 300, 150 + Random().nextDouble() * 400);
 }
 
 class _FloatingBubble extends StatefulWidget {
@@ -443,18 +503,13 @@ class _FloatingBubble extends StatefulWidget {
   final _BubbleSettings config;
   final VoidCallback onTap;
 
-  const _FloatingBubble({
-    required this.pulse,
-    required this.config,
-    required this.onTap,
-  });
+  const _FloatingBubble({required this.pulse, required this.config, required this.onTap});
 
   @override
   State<_FloatingBubble> createState() => _FloatingBubbleState();
 }
 
-class _FloatingBubbleState extends State<_FloatingBubble>
-    with SingleTickerProviderStateMixin {
+class _FloatingBubbleState extends State<_FloatingBubble> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late double _randomSeed;
 
@@ -462,10 +517,7 @@ class _FloatingBubbleState extends State<_FloatingBubble>
   void initState() {
     super.initState();
     _randomSeed = Random().nextDouble() * 100;
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 10),
-    )..repeat();
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 10))..repeat();
   }
 
   @override
@@ -482,18 +534,10 @@ class _FloatingBubbleState extends State<_FloatingBubble>
         final double t = _controller.value * 2 * pi;
         final dx = sin(t + _randomSeed) * 15;
         final dy = cos(t * 0.5 + _randomSeed) * 20;
-        final pulseScale = 1.0 + (sin(t * 2) * 0.05);
-
         return Positioned(
           left: widget.config.startPos.dx + dx,
           top: widget.config.startPos.dy + dy,
-          child: Transform.scale(
-            scale: pulseScale,
-            child: GestureDetector(
-              onTap: widget.onTap,
-              child: _buildBubbleUI(),
-            ),
-          ),
+          child: GestureDetector(onTap: widget.onTap, child: _buildBubbleUI()),
         );
       },
     );
@@ -506,33 +550,18 @@ class _FloatingBubbleState extends State<_FloatingBubble>
       height: widget.config.size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color.withOpacity(0.7), color.withOpacity(0.2)],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.3),
-            blurRadius: 5,
-            spreadRadius: 2,
-          ),
-        ],
+        gradient: RadialGradient(colors: [color.withOpacity(0.7), color.withOpacity(0.2)]),
+        boxShadow: [BoxShadow(color: color.withOpacity(0.3), blurRadius: 10)],
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              _moodIcons[widget.pulse.mood]!,
-              style: TextStyle(fontSize: widget.config.size * 0.45),
-            ),
-            if (widget.pulse.supports.isNotEmpty)
+            Text(_moodIcons[widget.pulse.mood]!, style: TextStyle(fontSize: widget.config.size * 0.4)),
+            if (widget.pulse.likes.isNotEmpty || widget.pulse.supports.isNotEmpty)
               Text(
-                "${widget.pulse.supports.length}❤️",
-                style: const TextStyle(
-                  fontSize: 9,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                "${widget.pulse.likes.length}❤️",
+                style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
               ),
           ],
         ),
@@ -548,8 +577,7 @@ class _BackgroundParticle extends StatefulWidget {
   State<_BackgroundParticle> createState() => _BackgroundParticleState();
 }
 
-class _BackgroundParticleState extends State<_BackgroundParticle>
-    with SingleTickerProviderStateMixin {
+class _BackgroundParticleState extends State<_BackgroundParticle> with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   late Offset pos;
 
@@ -557,10 +585,7 @@ class _BackgroundParticleState extends State<_BackgroundParticle>
   void initState() {
     super.initState();
     pos = Offset(Random().nextDouble() * 400, Random().nextDouble() * 800);
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 5 + Random().nextInt(5)),
-    )..repeat(reverse: true);
+    _ctrl = AnimationController(vsync: this, duration: Duration(seconds: 5 + Random().nextInt(5)))..repeat(reverse: true);
   }
 
   @override
@@ -578,14 +603,7 @@ class _BackgroundParticleState extends State<_BackgroundParticle>
         top: pos.dy - (_ctrl.value * 100),
         child: Opacity(
           opacity: 0.1,
-          child: Container(
-            width: 2,
-            height: 2,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
+          child: Container(width: 2, height: 2, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
         ),
       ),
     );

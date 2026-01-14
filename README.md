@@ -11,9 +11,14 @@
 - (optional) reactions to sb' emotion
 
 UI - RENATO
+UI - RENATO
 - click and slide to another view
 - navbar click on the button not only
 - change colors and make color palette
+
+MORE
+- update readme with description
+- update slides with screens & info!!!!!!!!!!!!!!
 
 - emotions colors so far:const _moodColorsCalendar = {
   Mood.happy: Colors.amber,
