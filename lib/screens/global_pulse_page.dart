@@ -486,8 +486,8 @@ Widget _buildFabRow(BuildContext context, PulseState state, ThemeProvider themeP
   void _showCannotSupportSelfSnack(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text("You can't send support to your own bubble."),
-        backgroundColor: Colors.grey[850],
+        content: const Text("You can't send support to your own bubble.", style: TextStyle(color: Colors.white),),
+        backgroundColor: const Color.fromARGB(255, 61, 58, 58).withOpacity(0.6),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),
