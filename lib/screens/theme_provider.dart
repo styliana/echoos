@@ -37,8 +37,9 @@ class ThemeProvider extends ChangeNotifier {
       : const [
           Color(0xFFF5F7FA),
           Color(0xFFE8EAF6),
-          Color(0xFFD1C4E9),
           Color(0xFFB39DDB),
+          Color.fromARGB(255, 102, 115, 136),
+          Color.fromARGB(255, 39, 52, 78),
         ];
 
   // Text colors

@@ -92,6 +92,12 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
                             fontFamily: 'Georgia',
                             fontStyle: FontStyle.italic,
                             fontWeight: FontWeight.w300,
+                            shadows: [
+                              Shadow( // [web:3][web:5]
+                                blurRadius: 0.1,  // How soft the shadow is
+                                color: const Color.fromARGB(255, 192, 180, 5), // Color of the shadow
+                              ),
+                            ],
                             letterSpacing: 2,
                           ),
                         ),
