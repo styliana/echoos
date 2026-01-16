@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:belfort/screens/emotion_calendar_page.dart';
 import 'package:belfort/screens/stats_page.dart';
 import 'package:belfort/screens/mood_journey_page.dart';
+import 'package:belfort/screens/theme_provider.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -33,18 +35,15 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color.fromARGB(255, 21, 24, 36),
-              Color(0xFF1E2235),
-              Color.fromARGB(255, 39, 52, 78),
-              Color.fromARGB(255, 102, 115, 136),
-            ],
+            colors: themeProvider.backgroundGradient,
           ),
         ),
         child: SafeArea(
@@ -56,10 +55,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "E c h o o s",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: themeProvider.primaryTextColor,
                         fontSize: 34,
                         fontWeight: FontWeight.w900,
                         letterSpacing: -1,
@@ -68,7 +67,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     Text(
                       "Dashboard",
                       style: TextStyle(
-                        color: Color(0xFFCE93D8).withOpacity(0.8),
+                        color: themeProvider.dashboardAccent.withOpacity(0.8),
                         fontSize: 20,
                         fontFamily: 'Georgia',
                         fontStyle: FontStyle.italic,
@@ -77,13 +76,13 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 8,left: 8),
+                      margin: const EdgeInsets.only(top: 8, left: 8),
                       height: 2,
                       width: 90,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFCE93D8), Colors.transparent],
+                        gradient: LinearGradient(
+                          colors: [themeProvider.dashboardAccent, Colors.transparent],
                         ),
                       ),
                     ),
@@ -96,10 +95,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
+                    color: themeProvider.cardColor(0.08),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Color(0xFFCE93D8).withOpacity(0.3),
+                      color: themeProvider.dashboardAccent.withOpacity(0.3),
                       width: 1,
                     ),
                   ),
@@ -112,8 +111,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           shape: BoxShape.circle,
                           gradient: RadialGradient(
                             colors: [
-                              Color(0xFFCE93D8).withOpacity(0.3),
-                              Color(0xFFCE93D8).withOpacity(0.1),
+                              themeProvider.dashboardAccent.withOpacity(0.3),
+                              themeProvider.dashboardAccent.withOpacity(0.1),
                             ],
                           ),
                         ),
@@ -124,7 +123,9 @@ class _DashboardPageState extends State<DashboardPage> {
                               ? NetworkImage(user!.photoURL!)
                               : null,
                           child: user?.photoURL == null
-                              ? const Icon(Icons.person, color: Colors.white, size: 30)
+                              ? Icon(Icons.person, 
+                                  color: themeProvider.primaryTextColor, 
+                                  size: 30)
                               : null,
                         ),
                       ),
@@ -135,8 +136,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           children: [
                             Text(
                               user?.displayName ?? "Utilisateur",
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: themeProvider.primaryTextColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                               ),
@@ -145,7 +146,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             Text(
                               user?.email ?? "",
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
+                                color: themeProvider.secondaryTextColor,
                                 fontSize: 13,
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -166,9 +167,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   children: [
                     _buildMenuButton(
                       context,
+                      themeProvider,
                       title: 'Statistics',
                       icon: Icons.bar_chart_sharp,
-                      color: Color(0xFFCE93D8),
+                      color: themeProvider.dashboardAccent,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const StatsPage()),
@@ -176,9 +178,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     _buildMenuButton(
                       context,
+                      themeProvider,
                       title: 'Calendar',
                       icon: Icons.calendar_month_sharp,
-                      color: Color(0xFFCE93D8),
+                      color: themeProvider.dashboardAccent,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const EmotionCalendarPage()),
@@ -186,17 +189,31 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     _buildMenuButton(
                       context,
+                      themeProvider,
                       title: 'My journey',
                       icon: Icons.mail_sharp,
-                      color: Color(0xFFCE93D8),
+                      color: themeProvider.dashboardAccent,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const MoodJourneyPage()),
                       ),
                     ),
                     const SizedBox(height: 20),
+                    
+                    // Theme Toggle Button
                     _buildMenuButton(
                       context,
+                      themeProvider,
+                      title: themeProvider.isDarkMode ? 'Light Mode' : 'Dark Mode',
+                      icon: themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                      color: themeProvider.isDarkMode ? Colors.amber : Colors.indigo,
+                      onTap: () => themeProvider.toggleTheme(),
+                    ),
+                    
+                    const SizedBox(height: 10),
+                    _buildMenuButton(
+                      context,
+                      themeProvider,
                       title: 'Logout',
                       icon: Icons.logout_sharp,
                       color: Colors.redAccent,
@@ -213,7 +230,8 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildMenuButton(
-      BuildContext context, {
+      BuildContext context,
+      ThemeProvider themeProvider, {
         required String title,
         required IconData icon,
         required Color color,
@@ -230,7 +248,7 @@ class _DashboardPageState extends State<DashboardPage> {
           decoration: BoxDecoration(
             color: isOutlined
                 ? Colors.transparent
-                : Colors.white.withOpacity(0.08),
+                : themeProvider.cardColor(0.08),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isOutlined
@@ -245,8 +263,8 @@ class _DashboardPageState extends State<DashboardPage> {
               const SizedBox(width: 20),
               Text(
                 title,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: themeProvider.primaryTextColor,
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -254,7 +272,7 @@ class _DashboardPageState extends State<DashboardPage> {
               const Spacer(),
               Icon(
                 Icons.chevron_right_rounded,
-                color: Colors.white.withOpacity(0.3),
+                color: themeProvider.subtleTextColor,
               ),
             ],
           ),
