@@ -6,6 +6,7 @@ import 'package:belfort/screens/emotion_calendar_page.dart';
 import 'package:belfort/screens/stats_page.dart';
 import 'package:belfort/screens/mood_journey_page.dart';
 import 'package:belfort/screens/theme_provider.dart';
+import 'package:belfort/screens/reminder_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -22,13 +23,15 @@ class _DashboardPageState extends State<DashboardPage> {
       await FirebaseAuth.instance.signOut();
       await GoogleSignIn().signOut();
       if (mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil('/login', (route) => false);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('You logged out')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('You logged out')));
       }
     }
   }
@@ -36,7 +39,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -82,7 +85,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         gradient: LinearGradient(
-                          colors: [themeProvider.dashboardAccent, Colors.transparent],
+                          colors: [
+                            themeProvider.dashboardAccent,
+                            Colors.transparent,
+                          ],
                         ),
                       ),
                     ),
@@ -123,9 +129,11 @@ class _DashboardPageState extends State<DashboardPage> {
                               ? NetworkImage(user!.photoURL!)
                               : null,
                           child: user?.photoURL == null
-                              ? Icon(Icons.person, 
-                                  color: themeProvider.primaryTextColor, 
-                                  size: 30)
+                              ? Icon(
+                                  Icons.person,
+                                  color: themeProvider.primaryTextColor,
+                                  size: 30,
+                                )
                               : null,
                         ),
                       ),
@@ -162,66 +170,97 @@ class _DashboardPageState extends State<DashboardPage> {
               const SizedBox(height: 40),
 
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  children: [
-                    _buildMenuButton(
-                      context,
-                      themeProvider,
-                      title: 'Statistics',
-                      icon: Icons.bar_chart_sharp,
-                      color: themeProvider.dashboardAccent,
-                      onTap: () => Navigator.push(
+                child: SafeArea(
+                  bottom: true,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    children: [
+                      _buildMenuButton(
                         context,
-                        MaterialPageRoute(builder: (context) => const StatsPage()),
+                        themeProvider,
+                        title: 'Statistics',
+                        icon: Icons.bar_chart_sharp,
+                        color: themeProvider.dashboardAccent,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const StatsPage(),
+                          ),
+                        ),
                       ),
-                    ),
-                    _buildMenuButton(
-                      context,
-                      themeProvider,
-                      title: 'Calendar',
-                      icon: Icons.calendar_month_sharp,
-                      color: themeProvider.dashboardAccent,
-                      onTap: () => Navigator.push(
+                      _buildMenuButton(
                         context,
-                        MaterialPageRoute(builder: (context) => const EmotionCalendarPage()),
+                        themeProvider,
+                        title: 'Calendar',
+                        icon: Icons.calendar_month_sharp,
+                        color: themeProvider.dashboardAccent,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EmotionCalendarPage(),
+                          ),
+                        ),
                       ),
-                    ),
-                    _buildMenuButton(
-                      context,
-                      themeProvider,
-                      title: 'My journey',
-                      icon: Icons.mail_sharp,
-                      color: themeProvider.dashboardAccent,
-                      onTap: () => Navigator.push(
+                      _buildMenuButton(
                         context,
-                        MaterialPageRoute(builder: (context) => const MoodJourneyPage()),
+                        themeProvider,
+                        title: 'My journey',
+                        icon: Icons.mail_sharp,
+                        color: themeProvider.dashboardAccent,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MoodJourneyPage(),
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    
-                    // Theme Toggle Button
-                    _buildMenuButton(
-                      context,
-                      themeProvider,
-                      title: themeProvider.isDarkMode ? 'Light Mode' : 'Dark Mode',
-                      icon: themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                      color: themeProvider.isDarkMode ? Colors.amber : Colors.indigo,
-                      onTap: () => themeProvider.toggleTheme(),
-                    ),
-                    
-                    const SizedBox(height: 10),
-                    _buildMenuButton(
-                      context,
-                      themeProvider,
-                      title: 'Logout',
-                      icon: Icons.logout_sharp,
-                      color: Colors.redAccent,
-                      onTap: _handleLogout,
-                    ),
-                  ],
+                      _buildMenuButton(
+                        context,
+                        themeProvider,
+                        title: 'Reminders',
+                        icon: Icons.notifications_active_sharp,
+                        color: themeProvider.dashboardAccent,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReminderPage(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Theme Toggle Button
+                      _buildMenuButton(
+                        context,
+                        themeProvider,
+                        title: themeProvider.isDarkMode
+                            ? 'Light Mode'
+                            : 'Dark Mode',
+                        icon: themeProvider.isDarkMode
+                            ? Icons.light_mode
+                            : Icons.dark_mode,
+                        color: themeProvider.isDarkMode
+                            ? Colors.amber
+                            : Colors.indigo,
+                        onTap: () => themeProvider.toggleTheme(),
+                      ),
+
+                      const SizedBox(height: 10),
+                      _buildMenuButton(
+                        context,
+                        themeProvider,
+                        title: 'Logout',
+                        icon: Icons.logout_sharp,
+                        color: Colors.redAccent,
+                        onTap: _handleLogout,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+
+              const SizedBox(height: 100),
+
             ],
           ),
         ),
@@ -230,14 +269,14 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildMenuButton(
-      BuildContext context,
-      ThemeProvider themeProvider, {
-        required String title,
-        required IconData icon,
-        required Color color,
-        required VoidCallback onTap,
-        bool isOutlined = false,
-      }) {
+    BuildContext context,
+    ThemeProvider themeProvider, {
+    required String title,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+    bool isOutlined = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: InkWell(
