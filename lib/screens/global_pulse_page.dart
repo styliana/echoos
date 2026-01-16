@@ -277,7 +277,7 @@ Widget _buildFabRow(BuildContext context, PulseState state, ThemeProvider themeP
   showDialog(
     context: context,
     builder: (innerContext) => AlertDialog(
-      backgroundColor: themeProvider.isDarkMode ? const Color(0xFF161A2B) : Colors.white,
+      backgroundColor: themeProvider.isDarkMode ? const Color(0xFF161A2B) : const Color.fromARGB(255, 201, 207, 231),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Text("Delete today's mood?", 
         style: TextStyle(color: themeProvider.primaryTextColor)),
@@ -335,9 +335,9 @@ Widget _buildFabRow(BuildContext context, PulseState state, ThemeProvider themeP
                         const Color(0xFF000000),
                       ]
                     : [
-                        Colors.white,
-                        const Color(0xFFF5F5F5),
-                        const Color(0xFFEEEEEE),
+                        const Color(0xFFE8EAF6),
+                        const Color(0xFFB39DDB),
+                        const Color(0xFF27344E),
                       ],
               ),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),

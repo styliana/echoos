@@ -29,17 +29,17 @@ class ThemeProvider extends ChangeNotifier {
   // Gradient colors for dark mode
   List<Color> get backgroundGradient => _isDarkMode
       ? const [
-          Color.fromARGB(255, 21, 24, 36),
+          Color(0xFF151824),
           Color(0xFF1E2235),
-          Color.fromARGB(255, 39, 52, 78),
-          Color.fromARGB(255, 102, 115, 136),
+          Color(0xFF27344E),
+          Color(0xFF667388),
         ]
       : const [
           Color(0xFFF5F7FA),
           Color(0xFFE8EAF6),
           Color(0xFFB39DDB),
-          Color.fromARGB(255, 102, 115, 136),
-          Color.fromARGB(255, 39, 52, 78),
+          Color(0xFF667388),
+          Color(0xFF27344E),
         ];
 
   // Text colors
