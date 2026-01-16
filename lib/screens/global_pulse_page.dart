@@ -54,81 +54,83 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
       builder: (context, state) {
         final myUid = FirebaseAuth.instance.currentUser?.uid;
         return Scaffold(
-          body: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: themeProvider.backgroundGradient,
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              return Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: themeProvider.backgroundGradient,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              ...List.generate(15, (index) => _BackgroundParticle(themeProvider: themeProvider)),
+                  ...List.generate(15, (index) => _BackgroundParticle(themeProvider: themeProvider)),
 
-              Positioned(
-                top: 50,
-                left: 30,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "E c h o o s",
-                      style: TextStyle(
-                        color: themeProvider.primaryTextColor,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -1,
-                      ),
-                    ),
-                    Text(
-                      "Community",
-                      style: TextStyle(
-                        color: themeProvider.pulseAccent.withOpacity(0.8),
-                        fontSize: 20,
-                        fontFamily: 'Georgia',
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 8, left: 8),
-                      height: 2,
-                      width: 90,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(
-                          colors: [themeProvider.pulseAccent, Colors.transparent],
+                  Positioned(
+                    top: 50,
+                    left: 30,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "E c h o o s",
+                          style: TextStyle(
+                            color: themeProvider.primaryTextColor,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -1,
+                          ),
                         ),
-                      ),
+                        Text(
+                          "Community",
+                          style: TextStyle(
+                            color: themeProvider.pulseAccent.withOpacity(0.8),
+                            fontSize: 20,
+                            fontFamily: 'Georgia',
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 8, left: 8),
+                          height: 2,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            gradient: LinearGradient(
+                              colors: [themeProvider.pulseAccent, Colors.transparent],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+
+                  ...state.pulses.map((p) {
+                    _bubbleConfigs.putIfAbsent(p.id, () => _BubbleSettings());
+                    final config = _bubbleConfigs[p.id]!;
+                    final isMine = p.userId == myUid;
+
+                        return _FloatingBubble(
+                          key: ValueKey(p.id),
+                          pulse: p,
+                          config: config,
+                          isMine: isMine,
+                          maxWidth: constraints.maxWidth,
+                          maxHeight: constraints.maxHeight,
+                          onTap: isMine
+                              ? () => _showCannotSupportSelfSnack(context)
+                              : () => _showSupportModal(context, p),
+                        );
+                      }).toList(),
+                    ],
+                  );
+                },
               ),
-
-              ...state.pulses.map((p) {
-                _bubbleConfigs.putIfAbsent(p.id, () => _BubbleSettings());
-                final config = _bubbleConfigs[p.id]!;
-                final isMine = p.userId == myUid;
-
-                    return _FloatingBubble(
-                      key: ValueKey(p.id),
-                      pulse: p,
-                      config: config,
-                      isMine: isMine,
-                      maxWidth: constraints.maxWidth,
-                      maxHeight: constraints.maxHeight,
-                      onTap: isMine
-                          ? () => _showCannotSupportSelfSnack(context)
-                          : () => _showSupportModal(context, p),
-                    );
-                  }).toList(),
-                ],
-              );
-            },
-          ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: _buildFabRow(context, state, themeProvider),
         );
