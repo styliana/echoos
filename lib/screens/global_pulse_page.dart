@@ -50,81 +50,88 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
       builder: (context, state) {
         final myUid = FirebaseAuth.instance.currentUser?.uid;
         return Scaffold(
-          body: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color.fromARGB(255, 21, 24, 36), 
-                      Color(0xFF1E2235),
-                      Color.fromARGB(255, 39, 52, 78),
-                      Color.fromARGB(255, 102, 115, 136),
-                    ],
+          resizeToAvoidBottomInset: false,
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              return Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color.fromARGB(255, 21, 24, 36), 
+                          Color(0xFF1E2235),
+                          Color.fromARGB(255, 39, 52, 78),
+                          Color.fromARGB(255, 102, 115, 136),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              ...List.generate(15, (index) => const _BackgroundParticle()),
+                  ...List.generate(15, (index) => const _BackgroundParticle()),
 
-              Positioned(
-                top: 50,
-                left: 30,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "E c h o o s",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -1,
-                      ),
-                    ),
-                    Text(
-                      "Community",
-                      style: TextStyle(
-                        color: Colors.yellow.withOpacity(0.8),
-                        fontSize: 20,
-                        fontFamily: 'Georgia',
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 8,left: 8),
-                      height: 2,
-                      width: 90,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: const LinearGradient(
-                          colors: [Colors.yellow, Colors.transparent],
+                  Positioned(
+                    top: 50,
+                    left: 30,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "E c h o o s",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -1,
+                          ),
                         ),
-                      ),
+                        Text(
+                          "Community",
+                          style: TextStyle(
+                            color: Colors.yellow.withOpacity(0.8),
+                            fontSize: 20,
+                            fontFamily: 'Georgia',
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 8,left: 8),
+                          height: 2,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            gradient: const LinearGradient(
+                              colors: [Colors.yellow, Colors.transparent],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
-              ...state.pulses.map((p) {
-                _bubbleConfigs.putIfAbsent(p.id, () => _BubbleSettings());
-                final config = _bubbleConfigs[p.id]!;
-                
-                final isMine = p.userId == myUid;
+                  ...state.pulses.map((p) {
+                    _bubbleConfigs.putIfAbsent(p.id, () => _BubbleSettings());
+                    final config = _bubbleConfigs[p.id]!;
+                    final isMine = p.userId == myUid;
 
-                return _FloatingBubble(
-                  pulse: p,
-                  config: config,
-                  isMine: isMine,
-                  onTap: isMine
-                      ? () => _showCannotSupportSelfSnack(context)
-                      : () => _showSupportModal(context, p),
-                );
-              }).toList(),
-            ],
+                    return _FloatingBubble(
+                      key: ValueKey(p.id),
+                      pulse: p,
+                      config: config,
+                      isMine: isMine,
+                      maxWidth: constraints.maxWidth,
+                      maxHeight: constraints.maxHeight,
+                      onTap: isMine
+                          ? () => _showCannotSupportSelfSnack(context)
+                          : () => _showSupportModal(context, p),
+                    );
+                  }).toList(),
+                ],
+              );
+            },
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: _buildFabRow(context, state),
@@ -574,7 +581,9 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
 
 class _BubbleSettings {
   final double size = 50.0 + Random().nextDouble() * 30.0;
-  final Offset startPos = Offset(Random().nextDouble() * 300, 150 + Random().nextDouble() * 400);
+  final double animationSeed = Random().nextDouble() * 100;
+  final Offset relativePos = Offset( Random().nextDouble(), 0.15 + (Random().nextDouble() * 0.7)
+  );
 }
 
 class _FloatingBubble extends StatefulWidget {
@@ -582,14 +591,19 @@ class _FloatingBubble extends StatefulWidget {
   final _BubbleSettings config;
   final VoidCallback onTap;
   final bool isMine;
+  final double maxWidth;
+  final double maxHeight; 
 
   const _FloatingBubble({
+    super.key,
     required this.pulse,
     required this.config,
     required this.onTap,
     required this.isMine,
-  });
-
+    required this.maxWidth,
+    required this.maxHeight, 
+    }
+  );
   @override
   State<_FloatingBubble> createState() => _FloatingBubbleState();
 }
@@ -601,7 +615,6 @@ class _FloatingBubbleState extends State<_FloatingBubble> with SingleTickerProvi
   @override
   void initState() {
     super.initState();
-    _randomSeed = Random().nextDouble() * 100;
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 10))..repeat();
   }
 
@@ -617,11 +630,14 @@ class _FloatingBubbleState extends State<_FloatingBubble> with SingleTickerProvi
       animation: _controller,
       builder: (context, child) {
         final double t = _controller.value * 2 * pi;
-        final dx = sin(t + _randomSeed) * 15;
-        final dy = cos(t * 0.5 + _randomSeed) * 20;
+        final seed = widget.config.animationSeed; 
+        final dx = sin(t + seed) * 15;
+        final dy = cos(t * 0.5 + seed) * 20;
+        final double baseLeft = widget.config.relativePos.dx * widget.maxWidth;
+        final double baseTop = widget.config.relativePos.dy * widget.maxHeight;
         return Positioned(
-          left: widget.config.startPos.dx + dx,
-          top: widget.config.startPos.dy + dy,
+          left: baseLeft + dx,
+          top: baseTop + dy,
           child: GestureDetector(onTap: widget.onTap, child: _buildBubbleUI()),
         );
       },
