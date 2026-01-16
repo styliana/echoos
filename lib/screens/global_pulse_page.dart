@@ -131,27 +131,29 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
     );
   }
 
-  Widget _buildFabRow(BuildContext context, PulseState state, ThemeProvider themeProvider) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 90),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: "add",
-            onPressed: state.hasPostedToday ? null : () => _showAddMoodDialog(context),
-            backgroundColor: state.hasPostedToday
-                ? themeProvider.cardColor(0.2)
-                : themeProvider.cardColor(0.4),
-            child: Icon(
-              state.hasPostedToday ? Icons.check : Icons.add,
-              color: themeProvider.primaryTextColor,
-            ),
+Widget _buildFabRow(BuildContext context, PulseState state, ThemeProvider themeProvider) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(10, 0, 10, 90),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FloatingActionButton(
+          heroTag: "add",
+          onPressed: state.hasPostedToday 
+              ? () => _showDeleteConfirmation(context, state.todayPulseId)
+              : () => _showAddMoodDialog(context),
+          backgroundColor: state.hasPostedToday
+              ? Colors.redAccent.withOpacity(0.4)
+              : themeProvider.cardColor(0.4),
+          child: Icon(
+            state.hasPostedToday ? Icons.delete_outline : Icons.add,
+            color: themeProvider.primaryTextColor,
           ),
-        ],
-      ),
-    );
-  }
+        ), // <--- ADDED THIS CLOSING PARENTHESIS
+      ],
+    ),
+  );
+}
 
   void _showAddMoodDialog(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
@@ -252,6 +254,38 @@ class _GlobalPulseViewState extends State<GlobalPulseView> {
       ),
     );
   }
+
+  void _showDeleteConfirmation(BuildContext context, String? pulseId) {
+  if (pulseId == null) return;
+  
+  final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+  final pulseBloc = context.read<PulseBloc>();
+
+  showDialog(
+    context: context,
+    builder: (innerContext) => AlertDialog(
+      backgroundColor: themeProvider.isDarkMode ? const Color(0xFF161A2B) : Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Text("Delete today's mood?", 
+        style: TextStyle(color: themeProvider.primaryTextColor)),
+      content: Text("Are you sure you want to remove your entry for today?",
+        style: TextStyle(color: themeProvider.secondaryTextColor)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(innerContext),
+          child: Text("CANCEL", style: TextStyle(color: themeProvider.subtleTextColor)),
+        ),
+        TextButton(
+          onPressed: () {
+            pulseBloc.add(DeleteTodayPulse(pulseId)); // Make sure this event exists in pulse_event.dart
+            Navigator.pop(innerContext);
+          },
+          child: const Text("DELETE", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+        ),
+      ],
+    ),
+  );
+}
 
   void _showSupportModal(BuildContext context, MoodPulse pulse) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
@@ -597,4 +631,5 @@ class _BackgroundParticleState extends State<_BackgroundParticle>
       ),
     );
   }
+  
 }

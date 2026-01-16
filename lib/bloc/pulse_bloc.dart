@@ -10,34 +10,62 @@ class PulseBloc extends Bloc<PulseEvent, PulseState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   PulseBloc() : super(PulseState()) {
-    on<StreamPulses>((event, emit) async {
-      emit(state.copyWith(isLoading: true));
+   on<StreamPulses>((event, emit) async {
+  emit(state.copyWith(isLoading: true));
 
-      await emit.forEach(
-        _firestore.collection('pulses').orderBy('createdAt', descending: true).limit(30).snapshots(),
-        onData: (QuerySnapshot snapshot) {
-          final pulses = snapshot.docs.map((doc) => MoodPulse.fromFirestore(doc)).toList();
+  await emit.forEach(
+    _firestore
+        .collection('pulses')
+        .orderBy('createdAt', descending: true)
+        .limit(30)
+        .snapshots(),
+    onData: (QuerySnapshot snapshot) {
+      final pulses = snapshot.docs.map((doc) => MoodPulse.fromFirestore(doc)).toList();
+      final currentUid = _auth.currentUser?.uid;
+      
+      bool postedToday = false;
+      String? todayId;
 
-          final currentUid = _auth.currentUser?.uid;
-          bool postedToday = false;
-
-          if (currentUid != null) {
-            final now = DateTime.now();
-            postedToday = pulses.any((p) =>
-            p.userId == currentUid &&
+      if (currentUid != null) {
+        final now = DateTime.now();
+        
+        try {
+          // 1. Find the pulse that belongs to the user and was created today
+          final MoodPulse todayPulse = pulses.firstWhere(
+            (p) =>
+                p.userId == currentUid &&
                 p.createdAt.day == now.day &&
                 p.createdAt.month == now.month &&
-                p.createdAt.year == now.year
-            );
-          }
-
-          return state.copyWith(
-              pulses: pulses,
-              isLoading: false,
-              hasPostedToday: postedToday
+                p.createdAt.year == now.year,
           );
-        },
+
+          // 2. If found, set these variables
+          postedToday = true;
+          todayId = todayPulse.id; 
+        } catch (e) {
+          // If no pulse is found, firstWhere throws an error, 
+          // so we catch it and keep the default values (false/null)
+          postedToday = false;
+          todayId = null;
+        }
+      }
+
+      return state.copyWith(
+        pulses: pulses,
+        isLoading: false,
+        hasPostedToday: postedToday,
+        todayPulseId: todayId, // Now todayId has a real value!
       );
+    },
+  );
+});
+
+    on<DeleteTodayPulse>((event, emit) async {
+      try {
+        await _firestore.collection('pulses').doc(event.pulseId).delete();
+      } catch (e) {
+        print("Error deleting pulse: $e");
+      }
     });
 
     on<AddPulse>((event, emit) async {

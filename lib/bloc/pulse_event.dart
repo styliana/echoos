@@ -24,3 +24,8 @@ class ToggleLike extends PulseEvent {
   final String userId;
   ToggleLike(this.pulseId, this.userId);
 }
+/// DELETE today's pulse
+class DeleteTodayPulse extends PulseEvent {
+  final String pulseId;
+  DeleteTodayPulse(this.pulseId);
+}

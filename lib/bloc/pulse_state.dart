@@ -14,11 +14,15 @@ class PulseState {
   /// verification to create new pulse
   final bool hasPostedToday;
 
+  final String? todayPulseId;
+
+
   PulseState({
     this.pulses = const [],
     this.isLoading = false,
     this.error,
     this.hasPostedToday = false,
+    this.todayPulseId,
   });
 
   PulseState copyWith({
@@ -26,12 +30,14 @@ class PulseState {
     bool? isLoading,
     String? error,
     bool? hasPostedToday,
+    String? todayPulseId,
   }) {
     return PulseState(
       pulses: pulses ?? this.pulses,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       hasPostedToday: hasPostedToday ?? this.hasPostedToday,
+      todayPulseId: todayPulseId ?? this.todayPulseId,
     );
   }
 }
