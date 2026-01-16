@@ -486,12 +486,11 @@ class _FloatingBubble extends StatefulWidget {
 
 class _FloatingBubbleState extends State<_FloatingBubble> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late double _randomSeed;
+  late double seed;
 
   @override
   void initState() {
     super.initState();
-    _randomSeed = Random().nextDouble() * 100;
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 10),
