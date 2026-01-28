@@ -1,58 +1,44 @@
 # Echoos
 
-## TODO
-- ~~remove option to continue as guest OLA~~
-- (brathing page) start/stop button to the down MARVYN
-- ~~add emotion calendar OLA~~
-- make emotion streak/support received/messages sent - to be real YUNUS
-- dashboard (stats page) YUNUS
-- (global pulse) add input field in adding emotion MARVYN
-- (global pulse) when clicking bubble in send support modal view we can see the user's comment how they feel and send our comment MARVYN
-- (optional) reactions to sb' emotion
+Echoos is a Zen-inspired Flutter application designed to help users track their emotional well-being and find moments of calm - through community connection and mindfulness tools.
 
-UI - RENATO
-- click and slide to another view
-- navbar click on the button not only
-- change colors and make color palette
+## Key Capabilities
 
-MORE
-- update readme with description
-- update slides with screens & info!!!!!!!!!!!!!! MARVYN
+* **Global Pulse**: A real-time emotional community arena where users share their moods via animated bubbles. Users can "catch" bubbles from others to view their comments and send supportive messages.
+* **Breathing Tool**: An immersive, synchronized breathing exercise designed with a calm aesthetic to help users relax and find focus.
+* **Mood Tracking & Stats**: A personal dashboard where users can track their "Emotion Streak" and visualize their emotional journey through a dedicated calendar.
+* **Kindness Metrics**: The app tracks social interactions, including the number of support messages sent to others and kindness received from the community.
+* **Modern Zen UI**: Features a premium "Deep Black" theme, elegant serif typography, and physics-based animations for a soothing user experience.
 
-- emotions colors so far:const _moodColorsCalendar = {
-  Mood.happy: Colors.amber,
-  Mood.stressed: Colors.redAccent,
-  Mood.sad: Colors.blueGrey,
-  Mood.angry: Colors.deepOrange,
-  Mood.calm: Colors.teal,
-};
+## Tech Stack
 
-A new Flutter project. Echoos  
-Our slides: [Click here](https://www.canva.com/design/DAG-Oiy4wJM/YvNVO2e3d4AFKmFmZv-86w/edit?utm_content=DAG-Oiy4wJM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
-
-## Getting Started
-### PAGE 1 - Global Pulse
-
-~~* Floating animated bubbles representing real-time user emotions~~
-~~* Share your mood (emoji + text) or "catch" others' bubbles to send support~~
-* Personal emotional journey history from previous days IN PROGRESS
-* User cannot click on their own bubble and send supportthey can do it for others' buuble
-
-### PAGE 2 - Breathing
-
-~~* Synchronized breathing tool for relaxation~~
-* Immersive design following the calm Global Pulse aesthetic IN PROGRESS
-
-### PAGE 3 - Stats
-
-* Track support messages received and kindness sent to others IN PROGRESS
-* View your "Emotion Streak" and consistency via a dedicated calendar
-* Num of sent suppoerts and received
-
-## Design DNA
-
-* Deep black theme (`#0F0F0F`)
-* Calm background particles and physics-based animations
-* Premium feel using elegant serif typography (Georgia)
+* **Frontend**: Flutter
+* **State Management**: Bloc and Provider
+* **Backend**: Firebase (Core, Auth, and Firestore)
+* **Scheduling**: Timezone-aware local notifications
 
 
+<table>
+  <tr>
+    <td align="center"><b>Login Page</b><br><img width="614" height="896" alt="image" src="https://github.com/user-attachments/assets/82cceec5-44f7-4d90-9a14-b14615c8e49c" /></td>
+    <td align="center"><b>Community Page</b><br><img width="617" height="891" alt="image" src="https://github.com/user-attachments/assets/31da07f9-b193-413a-b9f5-94f905b4b531" /></td>
+    <td align="center"><b>Send Support</b><br><img width="612" height="899" alt="image" src="https://github.com/user-attachments/assets/5d00392a-6199-441f-b30f-653be185e98c" /></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Share Your Emotion</b><br><img width="604" height="902" alt="image" src="https://github.com/user-attachments/assets/2589358d-c348-4ed6-bab1-3cf456375516" /></td>
+    <td align="center"><b>Breathing Practice</b><br><img width="611" height="896" alt="image" src="https://github.com/user-attachments/assets/a4f93068-464e-4f40-90bf-c330deda2eea" /></td>
+    <td align="center"><b>Board</b><br><img width="618" height="903" alt="image" src="https://github.com/user-attachments/assets/588a95e3-40fb-498b-b093-5574a307b43e" /></td>
+  </tr>
+  <tr>
+    <td align="center"><b>My Calendar</b><br><img width="618" height="902" alt="image" src="https://github.com/user-attachments/assets/39593d94-64d6-419d-b9c2-bd72b36b8b3c" /></td>
+    <td align="center"><b>Stats</b><br><img width="614" height="905" alt="image" src="https://github.com/user-attachments/assets/509dfa3b-6f4f-4a9d-b984-fd9878c0bb3a" /></td>
+    <td align="center"><b>My Journey</b><br><img width="606" height="900" alt="image" src="https://github.com/user-attachments/assets/90f9aec7-58ce-47e0-afef-af4e4af572ba" /></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Light Mode</b><br><img width="617" height="901" alt="image" src="https://github.com/user-attachments/assets/aff65441-2dbc-4f11-b80e-da96e4f03735" /></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+## Echoos.
